@@ -1,22 +1,31 @@
-'use client'
+"use client";
 
-import React, { useEffect, useState } from 'react';
-import Editor from '@monaco-editor/react';
-import { ChevronRight, ChevronDown, Folder, FileCode } from 'lucide-react';
+import React, { useEffect, useState } from "react";
+import Editor from "@monaco-editor/react";
+import { ChevronRight, ChevronDown, Folder, FileCode } from "lucide-react";
 import { useSearchParams } from "next/navigation";
-import { chat_endpoint } from '@/api';
-import { PROGRESS_STEPS, INITIAL_FILE_STRUCTURE, FileStructure } from '@/constants';
+import { chat_endpoint } from "@/api";
+import {
+  PROGRESS_STEPS,
+  INITIAL_FILE_STRUCTURE,
+  FileStructure,
+} from "@/constants";
+import { useWebContainer } from "../hooks/useWebContainers";
+import Preview from "../ui/preview/preview";
 
 export default function Builder() {
   const searchParams = useSearchParams();
   const query = searchParams.get("query");
   const [selectedFile, setSelectedFile] = useState<string | null>(null);
-  const [expandedFolders, setExpandedFolders] = useState<Set<string>>(new Set(['/']));
-
+  const [preview, setPreview] = useState<boolean>(true);
+  const [expandedFolders, setExpandedFolders] = useState<Set<string>>(
+    new Set(["/"])
+  );
+  const webcontainer = useWebContainer();
   const [fileStructure] = useState<FileStructure[]>(INITIAL_FILE_STRUCTURE);
 
   const toggleFolder = (path: string) => {
-    setExpandedFolders(prev => {
+    setExpandedFolders((prev) => {
       const next = new Set(prev);
       if (next.has(path)) {
         next.delete(path);
@@ -27,11 +36,10 @@ export default function Builder() {
     });
   };
 
-  const renderFileTree = (items: FileStructure[], path = '') => {
+  const renderFileTree = (items: FileStructure[], path = "") => {
     return items.map((item) => {
       const currentPath = `${path}/${item.name}`;
-      
-      if (item.type === 'folder') {
+      if (item.type === "folder") {
         const isExpanded = expandedFolders.has(currentPath);
         return (
           <div key={currentPath}>
@@ -39,7 +47,11 @@ export default function Builder() {
               className="flex items-center gap-2 py-1 px-2 hover:bg-gray-700 cursor-pointer"
               onClick={() => toggleFolder(currentPath)}
             >
-              {isExpanded ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
+              {isExpanded ? (
+                <ChevronDown size={16} />
+              ) : (
+                <ChevronRight size={16} />
+              )}
               <Folder size={16} className="text-yellow-400" />
               <span>{item.name}</span>
             </div>
@@ -52,12 +64,11 @@ export default function Builder() {
         );
       }
 
-    
       return (
         <div
           key={currentPath}
           className={`flex items-center gap-2 py-1 px-2 hover:bg-gray-700 cursor-pointer ${
-            selectedFile === currentPath ? 'bg-gray-700' : ''
+            selectedFile === currentPath ? "bg-gray-700" : ""
           }`}
           onClick={() => setSelectedFile(currentPath)}
         >
@@ -71,16 +82,60 @@ export default function Builder() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        console.log("okay")
+        console.log("okay");
         await chat_endpoint();
       } catch (error) {
         console.error("Error calling chat endpoint:", error);
       }
     };
-    
+
     fetchData();
   }, []);
-  
+
+  useEffect(() => {
+    const createMountStructure = (
+      files: FileStructure[]
+    ): Record<string, any> => {
+      const mountStructure: Record<string, any> = {};
+      const processFile = (file: FileStructure, isRootFolder: boolean) => {
+        if (file.type === "folder") {
+          // For folders, create a directory entry
+          mountStructure[file.name] = {
+            directory: file.children
+              ? Object.fromEntries(
+                  file.children.map((child) => [
+                    child.name,
+                    processFile(child, false),
+                  ])
+                )
+              : {},
+          };
+        } else if (file.type === "file") {
+          if (isRootFolder) {
+            mountStructure[file.name] = {
+              file: {
+                contents: file.content || "",
+              },
+            };
+          } else {
+            return {
+              file: {
+                contents: file.content || "",
+              },
+            };
+          }
+        }
+        return mountStructure[file.name];
+      };
+      files.forEach((file) => processFile(file, true));
+      return mountStructure;
+    };
+    const mountStructure = createMountStructure(fileStructure);
+    console.log("Here is your webcontainer object:-");
+    console.log(mountStructure);
+    webcontainer?.mount(mountStructure);
+  }, [fileStructure, webcontainer]);
+
   return (
     <div className="h-screen bg-gray-900 text-white flex">
       {/* Steps sidebar */}
@@ -91,7 +146,7 @@ export default function Builder() {
             <div
               key={index}
               className={`p-2 rounded ${
-                index === 2 ? 'bg-blue-500' : 'bg-gray-700'
+                index === 2 ? "bg-blue-500" : "bg-gray-700"
               }`}
             >
               {step}
@@ -110,7 +165,10 @@ export default function Builder() {
 
       {/* Code editor */}
       <div className="flex-1 bg-gray-900">
-        {selectedFile ? (
+        {
+        // selectedFile && preview ? (
+          // <Preview files={fileStructure} webcontainer={webcontainer} /> ) :
+           selectedFile ? (
           <Editor
             height="100vh"
             defaultLanguage="typescript"
