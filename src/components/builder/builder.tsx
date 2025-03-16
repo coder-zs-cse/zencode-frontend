@@ -1,16 +1,11 @@
 'use client'
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Editor from '@monaco-editor/react';
 import { ChevronRight, ChevronDown, Folder, FileCode } from 'lucide-react';
 import { useSearchParams } from "next/navigation";
-
-interface FileStructure {
-  name: string;
-  type: 'file' | 'folder';
-  children?: FileStructure[];
-  content?: string;
-}
+import { chat_endpoint } from '@/api';
+import { PROGRESS_STEPS, INITIAL_FILE_STRUCTURE, FileStructure } from '@/constants';
 
 export default function Builder() {
   const searchParams = useSearchParams();
@@ -18,46 +13,7 @@ export default function Builder() {
   const [selectedFile, setSelectedFile] = useState<string | null>(null);
   const [expandedFolders, setExpandedFolders] = useState<Set<string>>(new Set(['/']));
 
-  const [fileStructure] = useState<FileStructure[]>([
-    {
-      name: 'src',
-      type: 'folder',
-      children: [
-        {
-          name: 'components',
-          type: 'folder',
-          children: [
-            {
-              name: 'Header.tsx',
-              type: 'file',
-              content: '// Header component code here'
-            },
-            {
-              name: 'Footer.tsx',
-              type: 'file',
-              content: '// Footer component code here'
-            }
-          ]
-        },
-        {
-          name: 'App.tsx',
-          type: 'file',
-          content: '// App component code here'
-        }
-      ]
-    },
-    {
-      name: 'public',
-      type: 'folder',
-      children: [
-        {
-          name: 'index.html',
-          type: 'file',
-          content: '<!-- HTML template -->'
-        }
-      ]
-    }
-  ]);
+  const [fileStructure] = useState<FileStructure[]>(INITIAL_FILE_STRUCTURE);
 
   const toggleFolder = (path: string) => {
     setExpandedFolders(prev => {
@@ -96,6 +52,7 @@ export default function Builder() {
         );
       }
 
+    
       return (
         <div
           key={currentPath}
@@ -111,23 +68,26 @@ export default function Builder() {
     });
   };
 
-  const steps = [
-    'Analyzing requirements...',
-    'Generating file structure...',
-    'Creating components...',
-    'Implementing styles...',
-    'Setting up routing...',
-    'Adding functionality...',
-    'Optimizing performance...',
-  ];
-
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        console.log("okay")
+        await chat_endpoint();
+      } catch (error) {
+        console.error("Error calling chat endpoint:", error);
+      }
+    };
+    
+    fetchData();
+  }, []);
+  
   return (
     <div className="h-screen bg-gray-900 text-white flex">
       {/* Steps sidebar */}
       <div className="w-64 bg-gray-800 p-4 overflow-y-auto">
         <h2 className="text-xl font-bold mb-4">Progress</h2>
         <div className="space-y-2">
-          {steps.map((step, index) => (
+          {PROGRESS_STEPS.map((step, index) => (
             <div
               key={index}
               className={`p-2 rounded ${
