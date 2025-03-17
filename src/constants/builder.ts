@@ -5,14 +5,46 @@ export interface FileStructure {
   content?: string;
 }
 
-export const PROGRESS_STEPS = [
-  'Analyzing requirements...',
-  'Generating file structure...',
-  'Creating components...',
-  'Implementing styles...',
-  'Setting up routing...',
-  'Adding functionality...',
-  'Optimizing performance...',
+export enum StepStatus {
+  PENDING = 'PENDING',
+  IN_PROGRESS = 'IN_PROGRESS',
+  COMPLETED = 'COMPLETED'
+}
+
+export interface Step {
+  title: string;
+  status: StepStatus;
+}
+
+export const PROGRESS_STEPS: Step[] = [
+  {
+    title: 'Analyzing requirements...',
+    status: StepStatus.COMPLETED,
+  },
+  {
+    title: 'Generating file structure...',
+    status: StepStatus.COMPLETED,
+  },
+  {
+    title: 'Creating components...',
+    status: StepStatus.COMPLETED,
+  },
+  {
+    title: 'Implementing styles...',
+    status: StepStatus.IN_PROGRESS,
+  },
+  {
+    title: 'Setting up routing...',
+    status: StepStatus.PENDING,
+  },
+  {
+    title: 'Adding functionality...',
+    status: StepStatus.PENDING,
+  },
+  {
+    title: 'Optimizing performance...',
+    status: StepStatus.PENDING,
+  },
 ];
 
 export const INITIAL_FILE_STRUCTURE: FileStructure[] = [
