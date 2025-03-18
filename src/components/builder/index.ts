@@ -1,7 +1,7 @@
 import Builder from './builder';
-import ProgressSteps, { StepStatus, type Step } from './ProgressSteps';
-import FileExplorer from './FileExplorer';
-import CodeEditor from './CodeEditor';
+import ProgressSteps, { StepStatus, type Step } from './sections/ProgressSteps';
+import FileExplorer from './sections/FileExplorer';
+import CodeEditor from './sections/CodeEditor';
 
 export { 
   Builder, 

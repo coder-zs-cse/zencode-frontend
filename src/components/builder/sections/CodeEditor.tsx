@@ -1,16 +1,15 @@
 import React from 'react';
 import Editor from '@monaco-editor/react';
+import { FileStructure } from '@/types';
 
 interface CodeEditorProps {
-  selectedFile: string | null;
-  fileContent?: string;
+  selectedFile: FileStructure | null;
   readOnly?: boolean;
   onChange?: (value: string | undefined) => void;
 }
 
 export default function CodeEditor({ 
   selectedFile, 
-  fileContent = "// Select a file to edit", 
   readOnly = true,
   onChange
 }: CodeEditorProps) {
@@ -21,7 +20,7 @@ export default function CodeEditor({
           height="100vh"
           defaultLanguage="typescript"
           theme="vs-dark"
-          value={fileContent}
+          value={selectedFile.content}
           options={{
             minimap: { enabled: false },
             fontSize: 14,

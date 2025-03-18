@@ -1,89 +1,57 @@
-export interface FileStructure {
-  name: string;
-  type: 'file' | 'folder';
-  children?: FileStructure[];
-  content?: string;
-}
+import { FileStructure } from "@/types";
 
-export enum StepStatus {
-  PENDING = 'PENDING',
-  IN_PROGRESS = 'IN_PROGRESS',
-  COMPLETED = 'COMPLETED'
-}
 
-export interface Step {
-  title: string;
-  status: StepStatus;
-}
-
-export const PROGRESS_STEPS: Step[] = [
-  {
-    title: 'Analyzing requirements...',
-    status: StepStatus.COMPLETED,
-  },
-  {
-    title: 'Generating file structure...',
-    status: StepStatus.COMPLETED,
-  },
-  {
-    title: 'Creating components...',
-    status: StepStatus.COMPLETED,
-  },
-  {
-    title: 'Implementing styles...',
-    status: StepStatus.IN_PROGRESS,
-  },
-  {
-    title: 'Setting up routing...',
-    status: StepStatus.PENDING,
-  },
-  {
-    title: 'Adding functionality...',
-    status: StepStatus.PENDING,
-  },
-  {
-    title: 'Optimizing performance...',
-    status: StepStatus.PENDING,
-  },
-];
 
 export const INITIAL_FILE_STRUCTURE: FileStructure[] = [
   {
     name: 'src',
     type: 'folder',
+    path: 'src',
     children: [
       {
         name: 'components',
         type: 'folder',
+        path: 'src/components',
         children: [
           {
             name: 'Header.tsx',
             type: 'file',
-            content: '// Header component code here'
+            content: '// Header component code here',
+            path: 'src/components/Header.tsx'
           },
           {
             name: 'Footer.tsx',
             type: 'file',
-            content: '// Footer component code here'
+            content: '// Footer component code here',
+            path: 'src/components/Footer.tsx'
           }
         ]
       },
       {
         name: 'App.tsx',
         type: 'file',
-        content: '// App component code here'
+        content: '// App component code here',
+        path: 'src/App.tsx'
       }
     ]
   },
   {
     name: 'public',
     type: 'folder',
+    path: 'public',
     children: [
       {
         name: 'index.html',
         type: 'file',
-        content: '<!-- HTML template -->'
+        content: '<!-- HTML template -->',
+        path: 'public/index.html'
       }
     ]
+  },
+  {
+    name: 'next.config.js',
+    type: 'file',
+    content: "next config file",
+    path: 'next.config.js'
   }
 ]; 

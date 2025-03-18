@@ -2,26 +2,34 @@
 
 import React, { useEffect, useState } from 'react';
 import { useSearchParams } from "next/navigation";
-import { chat_endpoint } from '@/api';
-import { PROGRESS_STEPS, INITIAL_FILE_STRUCTURE, FileStructure } from '@/constants';
-import ProgressSteps from './ProgressSteps';
-import FileExplorer from './FileExplorer';
-import CodeEditor from './CodeEditor';
+import { chat_endpoint, template_endpoint } from '@/api';
+import { PROGRESS_STEPS, INITIAL_FILE_STRUCTURE } from '@/constants';
+import ProgressSteps from './sections/ProgressSteps';
+import FileExplorer from './sections/FileExplorer';
+import CodeEditor from './sections/CodeEditor';
+import { FileStructure, Step, templateAPIResponse } from '@/types';
+import { parseXml } from '@/lib/utils/xml';
 
-export default function Builder() {
+export default function Builder () {
   const searchParams = useSearchParams();
   const query = searchParams.get("query");
-  const [selectedFile, setSelectedFile] = useState<string | null>(null);
+  const [selectedFile, setSelectedFile] = useState<FileStructure | null>(null);
   const [fileStructure] = useState<FileStructure[]>(INITIAL_FILE_STRUCTURE);
+  const [steps, setSteps] = useState<Step[]>([]);
   
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        console.log("okay")
-        await chat_endpoint();
+        console.log("Fetching template data");
+        const templateData: templateAPIResponse = await template_endpoint();
+        console.log("data: ",templateData)
+        if (templateData) {
+          const parsedSteps = parseXml(templateData.template);
+          setSteps(parsedSteps);
+        }
       } catch (error) {
-        console.error("Error calling chat endpoint:", error);
+        console.error("Error calling endpoints:", error);
       }
     };
     
@@ -32,7 +40,7 @@ export default function Builder() {
     <div className="h-screen bg-gray-900 text-white flex">
       {/* Steps sidebar */}
       <ProgressSteps 
-        steps={PROGRESS_STEPS} 
+        steps={steps.length > 0 ? steps : PROGRESS_STEPS} 
       />
 
       {/* File structure */}

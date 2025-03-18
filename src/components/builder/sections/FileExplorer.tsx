@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { ChevronRight, ChevronDown, Folder, FileCode } from 'lucide-react';
-import { FileStructure } from '@/constants';
+import { FileStructure } from '@/types';
 
 interface FileExplorerProps {
   fileStructure: FileStructure[];
-  onFileSelect: (filePath: string) => void;
-  selectedFile: string | null;
+  onFileSelect: (file: FileStructure) => void;
+  selectedFile: FileStructure | null;
 }
 
 export default function FileExplorer({ 
@@ -56,9 +56,9 @@ export default function FileExplorer({
         <div
           key={currentPath}
           className={`flex items-center gap-2 py-1 px-2 hover:bg-gray-700 cursor-pointer ${
-            selectedFile === currentPath ? 'bg-gray-700' : ''
+            selectedFile?.path === currentPath ? 'bg-gray-700' : ''
           }`}
-          onClick={() => onFileSelect(currentPath)}
+          onClick={() => onFileSelect(item)}
         >
           <FileCode size={16} className="text-blue-400" />
           <span>{item.name}</span>
