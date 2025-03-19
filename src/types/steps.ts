@@ -5,11 +5,13 @@ export enum StepStatus {
 }
 
 export enum StepType {
-  CreateFile,
-  CreateFolder,
-  EditFile,
-  DeleteFile,
+  CreateFile, // title is Creating FilePath, content is present, path is present
+  CreateFolder, // title is Creating FolderPath, content is empty, path is present
+  EditFile, // title is Editing FileName, content is present, path is present
+  DeleteFile, // title is Deleting FileName, content is empty, path is present
   RunScript,
+  TextDisplay, //title is empty, content has text, path is empty
+  InternalComponentImport, // title is importing internal component, content has the code, path is prese
 }
 
 export interface Step {

@@ -15,7 +15,7 @@ export default function PromptField() {
       <button
         type="button"
         onClick={handleSubmit}
-        className=" bg-blue-500 absolute hover:bg-blue-600 text-white rounded-lg flex px-2 py-2 justify-self-end bottom-6 left-1/4 ml-12 transition-colors"
+        className=" bg-blue-500 absolute hover:bg-blue-600 text-white rounded-lg flex px-2 py-2 justify-self-end bottom-6 left-1/3 ml-28 transition-colors"
       >
         Generate
       </button>

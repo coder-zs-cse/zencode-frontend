@@ -1,5 +1,8 @@
-import React from 'react';
-import { CheckCircle, Clock, Loader2 } from 'lucide-react';
+'use client'
+import React, { Component } from 'react';
+import { CheckCircle, Clock, FilePlus, FileText, FileX, Folder, Loader2, MessageSquare, Terminal } from 'lucide-react';
+import { Step  } from '@/types';
+import { StepType } from '../../../types/steps';
 
 export enum StepStatus {
   PENDING = 'PENDING',
@@ -7,7 +10,7 @@ export enum StepStatus {
   COMPLETED = 'COMPLETED'
 }
 
-export interface Step {
+export interface StepObject {
   title: string;
   status: StepStatus;
 }
@@ -15,62 +18,116 @@ export interface Step {
 interface ProgressStepsProps {
   steps: Step[];
 }
-
-export default function ProgressSteps({ 
-  steps, 
-}: ProgressStepsProps) {
+export default function ProgressSteps({steps}:ProgressStepsProps) {
   
-  const getStatusIcon = (status: StepStatus) => {
+  const getStatusIcon = (status: StepStatus = StepStatus.PENDING) => {
     switch (status) {
       case StepStatus.COMPLETED:
-        return <CheckCircle size={18} className="text-green-400" />;
+        return <CheckCircle className="w-5 h-5 text-green-400" />;
       case StepStatus.IN_PROGRESS:
-        return <Loader2 size={18} className="text-blue-400 animate-spin" />;
+        return <Loader2 className="w-5 h-5 text-blue-400 animate-spin" />;
       case StepStatus.PENDING:
-        return <Clock size={18} className="text-gray-400" />;
+        return <Clock className="w-5 h-5 text-gray-500" />;
     }
   };
-
-  const getStatusColor = (status: StepStatus) => {
-    
+  
+  const getStatusColor = (status: StepStatus = StepStatus.PENDING) => {
     switch (status) {
       case StepStatus.COMPLETED:
-        return 'bg-green-800/30 hover:bg-green-800/50 border-green-500';
+        return 'bg-green-900/30 text-green-400 border-green-700';
       case StepStatus.IN_PROGRESS:
-        return 'bg-blue-800/30 hover:bg-blue-800/50 border-blue-500';
+        return 'bg-blue-900/30 text-blue-400 border-blue-700';
       case StepStatus.PENDING:
-        return 'bg-gray-700 hover:bg-gray-600';
+        return 'bg-gray-800 text-gray-400 border-gray-700';
+    }
+  };
+  
+  const StepIcon = ({ type }: { type: StepType }) => {
+    const iconClass = "w-5 h-5";
+    switch (type) {
+      case StepType.CreateFile:
+        return <FilePlus className={iconClass} />;
+      case StepType.CreateFolder:
+        return <Folder className={iconClass} />;
+      case StepType.DeleteFile:
+        return <FileX className={iconClass} />;
+      case StepType.EditFile:
+        return <FileText className={iconClass} />;
+      case StepType.RunScript:
+        return <Terminal className={iconClass} />;
+      case StepType.InternalComponentImport:
+        return <Component className={iconClass} />;
+      default:
+        return <MessageSquare className={iconClass} />;
+    }
+  };
+  
+  const StepContent = ({ step }: { step: Step }) => {
+    const statusColor = getStatusColor(step.status);
+    
+    switch (step.type) {
+      case StepType.RunScript:
+        return (
+          <pre className="mt-2 p-4 bg-gray-800/50 text-gray-300 rounded-lg overflow-x-auto border border-gray-700">
+            <code>{step.description}</code>
+          </pre>
+        );
+      case StepType.TextDisplay:
+        return <p className="mt-2 text-gray-400">{step.description}</p>;
+      default:
+        return (
+          <div className={`mt-2 p-3 rounded-lg border ${statusColor}`}>
+            {step.description}
+          </div>
+        );
     }
   };
 
   return (
-    <div className="w-64 bg-gray-800 p-4 overflow-y-auto">
+    <div className=" bg-gray-800 p-4 overflow-y-auto">
       <h2 className="text-xl font-bold mb-4">Progress</h2>
       <div className="space-y-3">
-        {steps.map((step, index) => {
-          
-          return (
-            <div
-              key={index}
-              className={`
-                p-3 rounded-lg transition-all duration-200 ease-in-out
-                ${getStatusColor(step.status)}
-                ${step.status === StepStatus.COMPLETED || step.status === StepStatus.IN_PROGRESS ? 'border border-opacity-50' : ''}
-                flex items-center gap-2 cursor-pointer
-              `}
-            >
-              {getStatusIcon(step.status)}
-              <span className={`
-                ${step.status === StepStatus.COMPLETED ? 'text-green-100' : ''}
-                ${step.status === StepStatus.IN_PROGRESS ? 'text-blue-100 font-medium' : ''}
-                ${step.status === StepStatus.PENDING ? 'text-gray-300' : ''}
-              `}>
-                {step.title}
-              </span>
+    <div className="w-full max-w-3xl mx-auto bg-gray-800 rounded-xl shadow-xl shadow-black/20 p-6 border border-gray-700">
+      <div className="space-y-6">
+      {steps.map((step, index) => (
+          <div key={index} className="relative">
+            <div className="flex items-start gap-4">
+              {/* Timeline line */}
+              {index < steps.length - 1 && (
+                <div className={`absolute top-10 left-5 w-0.5 h-full -ml-0.5 ${
+                  step.status === StepStatus.COMPLETED 
+                    ? 'bg-green-900/50' 
+                    : step.status === StepStatus.IN_PROGRESS 
+                    ? 'bg-blue-900/50' 
+                    : 'bg-gray-700'
+                }`} />
+              )}
+              
+              {/* Icon */}
+              <div className="relative z-10">
+                <div className={`p-2 rounded-lg ${getStatusColor(step.status)}`}>
+                  <StepIcon type={step.type} />
+                </div>
+              </div>
+              
+              {/* Content */}
+              <div className="flex-1">
+                <div className="flex items-center justify-between mb-2">
+                  <h3 className="font-medium text-gray-200">
+                    {step.title || step.type}
+                  </h3>
+                  <div className="flex items-center">
+                    {getStatusIcon(step.status)}
+                  </div>
+                </div>
+                <StepContent step={step} />
+              </div>
             </div>
-          );
-        })}
+          </div>
+        ))}
+      </div>
+    </div>
       </div>
     </div>
   );
-} 
+}
