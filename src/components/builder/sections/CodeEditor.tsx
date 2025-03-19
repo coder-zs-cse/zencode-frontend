@@ -14,10 +14,11 @@ export default function CodeEditor({
   onChange
 }: CodeEditorProps) {
   return (
-    <div className="flex-1 bg-gray-900">
+    <div className="flex-1 bg-gray-900 ">
+      
       {selectedFile ? (
         <Editor
-          height="100vh"
+          height="90vh"
           defaultLanguage="typescript"
           theme="vs-dark"
           value={selectedFile.content}
