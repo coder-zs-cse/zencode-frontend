@@ -80,7 +80,7 @@ export default function ProgressSteps({ steps }: ProgressStepsProps) {
 
       case StepType.RunScript:
         return (
-          <pre className="mt-2 p-4 bg-gray-800/50 text-gray-300 rounded-lg overflow-x-auto border border-gray-700">
+          <pre className="mt-2 p-4 bg-gray-800/50 text-gray-300 rounded-lg overflow-x-auto  border border-gray-700">
             <code>{step.description}</code>
           </pre>
         );
@@ -96,7 +96,7 @@ export default function ProgressSteps({ steps }: ProgressStepsProps) {
   };
 
   return (
-    <div className=" bg-gray-800 p-4 overflow-y-auto scrollable-content">
+    <div className="h-full bg-gray-800 p-4 overflow-y-auto scrollable-content">
       <h2 className="text-xl font-bold mb-4">Progress</h2>
       <div className="space-y-3">
         <div className="w-full max-w-3xl mx-auto bg-gray-800 rounded-xl shadow-xl shadow-black/20 p-6 border border-gray-700">

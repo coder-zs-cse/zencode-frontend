@@ -41,12 +41,12 @@ export default function Builder() {
   }, []);
   const [activeView, setActiveView] = useState<'editor' | 'preview'>('editor');
   return (
-    <div>
+    <div className="flex flex-col h-screen overflow-hidden">
       <Navbar/>
-      <div className="h-screen bg-gray-900 text-white flex">
+      <div className="flex-1 bg-gray-900 text-white flex overflow-hidden">
         {/* Steps sidebar */}
-        <div className="h-screen">
-          <div className="flex  h-5/6">
+        <div className="h-full flex flex-col w-[40%]">
+          <div className="flex flex-1 overflow-hidden">
             <ProgressSteps steps={steps.length > 0 ? steps : PROGRESS_STEPS} />
             <FileExplorer
               FileNode={FileNode}
@@ -54,13 +54,13 @@ export default function Builder() {
               selectedFile={selectedFile}
             />
           </div>
-          <div className="h-1/6 mt-2 pb-4 pt-2">
+          <div className="h-24 mt-2 pb-4 pt-2">
             <PromptField />
           </div>
         </div>
         
-        <div className="w-screen">
-          <div className="h-[10%] p-4">
+        <div className="flex-1 h-full overflow-hidden">
+          <div className="p-2">
             <div className="flex justify-between items-center">
               <CapsuleToggle
                 tabs={['editor', 'preview']}
@@ -72,12 +72,10 @@ export default function Builder() {
               </p>
             </div>
           </div>
-          <div className="h-[90%]">
-            <div className="h-full">
-              <div className="text-xl text-gray-800">
+          <div className="h-[calc(100%-3rem)] overflow-hidden">
+              <div className="text-xl text-gray-800 h-full">
                 {activeView === 'editor' ? <CodeEditor selectedFile={selectedFile} /> : 'Preview Content'}
               </div>
-            </div>
           </div>
         </div>
       </div>

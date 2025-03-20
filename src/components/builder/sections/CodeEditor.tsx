@@ -30,7 +30,7 @@ export default function CodeEditor({
           onChange={onChange}
         />
       ) : (
-        <div className="h-full flex items-center justify-center text-gray-400">
+        <div className="flex items-center justify-center text-gray-400">
           Select a file to start editing
         </div>
       )}
