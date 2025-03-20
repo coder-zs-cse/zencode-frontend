@@ -68,7 +68,7 @@ export function parseXml(response: string): Step[] {
           description: '',
           type: StepType.CreateFile,
           status: StepStatus.PENDING,
-          code: content.trim(),
+          content: content.trim(),
           path: filePath
         });
       } else if (type === 'shell') {
@@ -79,7 +79,7 @@ export function parseXml(response: string): Step[] {
           description: '',
           type: StepType.RunScript,
           status: StepStatus.PENDING,
-          code: content.trim()
+          content: content.trim()
         });
       }
     }

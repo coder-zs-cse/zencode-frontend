@@ -1,4 +1,4 @@
 
-export { type Step , StepStatus } from './steps';
-export { type FileStructure, FileStructureType } from './files'
+export { type Step , StepStatus, StepType } from './steps';
+export { type FileNode, FileNodeType } from './files'
 export { type templateAPIResponse as templateAPIResponse } from './api-response'

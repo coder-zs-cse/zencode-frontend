@@ -1,15 +1,15 @@
 import React, { useState } from 'react';
 import { ChevronRight, ChevronDown, Folder, FileCode } from 'lucide-react';
-import { FileStructure } from '@/types';
+import { FileNode } from '@/types';
 
 interface FileExplorerProps {
-  fileStructure: FileStructure[];
-  onFileSelect: (file: FileStructure) => void;
-  selectedFile: FileStructure | null;
+  FileNode: FileNode[];
+  onFileSelect: (file: FileNode) => void;
+  selectedFile: FileNode | null;
 }
 
 export default function FileExplorer({ 
-  fileStructure, 
+  FileNode, 
   onFileSelect, 
   selectedFile 
 }: FileExplorerProps) {
@@ -27,8 +27,18 @@ export default function FileExplorer({
     });
   };
 
-  const renderFileTree = (items: FileStructure[], path = '') => {
-    return items.map((item) => {
+  const sortItems = (items: FileNode[]) => {
+    return [...items].sort((a, b) => {
+      if (a.type === b.type) {
+        return a.name.localeCompare(b.name);
+      }
+      return a.type === 'folder' ? -1 : 1;
+    });
+  };
+  const renderFileTree = (items: FileNode[], path = '') => {
+    const sortedFileItems = sortItems(items);
+    
+    return sortedFileItems.map((item) => {
       const currentPath = `${path}/${item.name}`;
       
       if (item.type === 'folder') {
@@ -71,7 +81,7 @@ export default function FileExplorer({
     <div className="w-64 bg-gray-800 border-x border-gray-700 overflow-y-auto">
       <div className="p-4">
         <h2 className="text-xl font-bold mb-4">Files</h2>
-        {renderFileTree(fileStructure)}
+        {renderFileTree(FileNode)}
       </div>
     </div>
   );

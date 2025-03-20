@@ -1,9 +1,9 @@
 import React from 'react';
 import Editor from '@monaco-editor/react';
-import { FileStructure } from '@/types';
+import { FileNode } from '@/types';
 
 interface CodeEditorProps {
-  selectedFile: FileStructure | null;
+  selectedFile: FileNode | null;
   readOnly?: boolean;
   onChange?: (value: string | undefined) => void;
 }

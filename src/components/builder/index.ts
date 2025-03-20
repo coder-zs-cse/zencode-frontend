@@ -1,5 +1,5 @@
 import Builder from './builder';
-import ProgressSteps, { StepStatus, type Step } from './sections/ProgressSteps';
+import ProgressSteps, { StepStatus } from './sections/ProgressSteps';
 import FileExplorer from './sections/FileExplorer';
 import CodeEditor from './sections/CodeEditor';
 
@@ -10,5 +10,3 @@ export {
   CodeEditor,
   StepStatus 
 };
-
-export type { Step }; 

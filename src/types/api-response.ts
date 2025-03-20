@@ -1,3 +1,5 @@
+import { Step } from "./steps";
+
 export interface templateAPIResponse{
-    template: string
+    template: Step[]
 }

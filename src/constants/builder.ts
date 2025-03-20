@@ -1,27 +1,27 @@
-import { FileStructure } from "@/types";
+import { FileNode, FileNodeType } from "@/types";
 
 
 
-export const INITIAL_FILE_STRUCTURE: FileStructure[] = [
+export const INITIAL_FILE_STRUCTURE: FileNode[] = [
   {
     name: 'src',
-    type: 'folder',
+    type: FileNodeType.folder,
     path: 'src',
     children: [
       {
         name: 'components',
-        type: 'folder',
+        type: FileNodeType.folder,
         path: 'src/components',
         children: [
           {
             name: 'Header.tsx',
-            type: 'file',
+            type: FileNodeType.file,
             content: '// Header component code here',
             path: 'src/components/Header.tsx'
           },
           {
             name: 'Footer.tsx',
-            type: 'file',
+            type: FileNodeType.file,
             content: '// Footer component code here',
             path: 'src/components/Footer.tsx'
           }
@@ -29,7 +29,7 @@ export const INITIAL_FILE_STRUCTURE: FileStructure[] = [
       },
       {
         name: 'App.tsx',
-        type: 'file',
+        type: FileNodeType.file,
         content: '// App component code here',
         path: 'src/App.tsx'
       }
@@ -37,12 +37,12 @@ export const INITIAL_FILE_STRUCTURE: FileStructure[] = [
   },
   {
     name: 'public',
-    type: 'folder',
+    type: FileNodeType.folder,
     path: 'public',
     children: [
       {
         name: 'index.html',
-        type: 'file',
+        type: FileNodeType.file,
         content: '<!-- HTML template -->',
         path: 'public/index.html'
       }
@@ -50,7 +50,7 @@ export const INITIAL_FILE_STRUCTURE: FileStructure[] = [
   },
   {
     name: 'next.config.js',
-    type: 'file',
+    type: FileNodeType.file,
     content: "next config file",
     path: 'next.config.js'
   }

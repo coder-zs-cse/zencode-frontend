@@ -1,14 +1,14 @@
 import React from 'react';
 import { ChevronRight, ChevronDown, Folder, FileCode } from 'lucide-react';
 
-interface FileStructure {
+interface FileNode {
   name: string;
   type: 'file' | 'folder';
-  children?: FileStructure[];
+  children?: FileNode[];
 }
 
 interface FileTreeProps {
-  items: FileStructure[];
+  items: FileNode[];
   expandedFolders: Set<string>;
   toggleFolder: (path: string) => void;
   selectedFile: string | null;
@@ -16,7 +16,7 @@ interface FileTreeProps {
 }
 
 export const FileTree: React.FC<FileTreeProps> = ({ items, expandedFolders, toggleFolder, selectedFile, setSelectedFile }) => {
-  const renderFileTree = (items: FileStructure[], path = '') => {
+  const renderFileTree = (items: FileNode[], path = '') => {
     return items.map((item) => {
       const currentPath = `${path}/${item.name}`;
       
