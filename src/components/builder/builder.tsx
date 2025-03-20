@@ -2,14 +2,26 @@
 
 import React, { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import {  template_endpoint } from "@/api";
+import { template_endpoint } from "@/api";
 import { PROGRESS_STEPS, INITIAL_FILE_STRUCTURE } from "@/constants";
-import { CodeEditor,FileExplorer, PreviewFrame, ProgressSteps, PromptField } from '@/components/builder/sections';
+import {
+  CodeEditor,
+  FileExplorer,
+  PreviewFrame,
+  ProgressSteps,
+  PromptField,
+} from "@/components/builder/sections";
 import { Navbar, CapsuleToggle } from "@/components/ui";
 import { buildFileNodeTree } from "@/lib/utils";
 import { useWebContainer } from "@/hooks/webcontainer";
-import { FileNode, Step, StepType, StepStatus, templateAPIResponse } from "@/types";
- 
+import {
+  FileNode,
+  Step,
+  StepType,
+  StepStatus,
+  templateAPIResponse,
+} from "@/types";
+
 export default function Builder() {
   const searchParams = useSearchParams();
   const query = searchParams.get("query");
@@ -24,10 +36,11 @@ export default function Builder() {
       try {
         const templateData: templateAPIResponse = await template_endpoint();
         if (templateData) {
-          const updatedSteps = templateData.template.map(step => ({
+          console.log("Here is ", templateData);
+          const updatedSteps = templateData.template.map((step) => ({
             ...step,
             status: StepStatus.PENDING,
-            type: step.type as StepType
+            type: step.type as StepType,
           }));
           setSteps(updatedSteps);
           setFileNode(buildFileNodeTree(updatedSteps));
@@ -43,7 +56,7 @@ export default function Builder() {
   
   return (
     <div className="flex flex-col h-screen overflow-hidden">
-      <Navbar/>
+      <Navbar template={steps as Step[]} />
       <div className="flex-1 bg-gray-900 text-white flex overflow-hidden">
         {/* Steps sidebar */}
         <div className="h-full flex flex-col w-[40%]">
@@ -59,17 +72,17 @@ export default function Builder() {
             <PromptField />
           </div>
         </div>
-        
         <div className="flex-1 h-full overflow-hidden">
           <div className="p-2">
             <div className="flex justify-between items-center">
               <CapsuleToggle
-                tabs={['editor', 'preview']}
+                tabs={["editor", "preview"]}
                 activeTab={activeView}
                 onChange={setActiveView}
               />
               <p className="text-sm text-gray-600">
-                Currently viewing: <span className="font-semibold">{activeView}</span>
+                Currently viewing:{" "}
+                <span className="font-semibold">{activeView}</span>
               </p>
             </div>
           </div>
