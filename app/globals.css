@@ -36,3 +36,13 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+.scrollable-content {
+  overflow: auto; /* Enable scrolling */
+  scrollbar-width: none; /* Hide scrollbar for Firefox */
+}
+
+/* Hide scrollbar for WebKit browsers (Chrome, Safari) */
+.scrollable-content::-webkit-scrollbar {
+  display: none; /* Hide scrollbar */
+}

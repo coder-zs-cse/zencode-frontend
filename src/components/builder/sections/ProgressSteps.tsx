@@ -84,7 +84,7 @@ export default function ProgressSteps({steps}:ProgressStepsProps) {
   };
 
   return (
-    <div className=" bg-gray-800 p-4 overflow-y-auto">
+    <div className=" bg-gray-800 p-4 overflow-y-auto scrollable-content">
       <h2 className="text-xl font-bold mb-4">Progress</h2>
       <div className="space-y-3">
     <div className="w-full max-w-3xl mx-auto bg-gray-800 rounded-xl shadow-xl shadow-black/20 p-6 border border-gray-700">

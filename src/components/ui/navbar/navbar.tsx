@@ -113,7 +113,7 @@ export function Navbar() {
   return (
     <>
       <nav className="bg-[#0A1A2F] border-b border-[#1E3A5F]">
-        <div className="max-w-7xl mx-10 ">
+        <div className=" mx-2">
           <div className="flex justify-between h-16">
             <div className="flex items-center">
               <span className="text-2xl font-bold text-white tracking-tight mr-8">ZenCode AI</span>
