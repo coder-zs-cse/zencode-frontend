@@ -14,7 +14,7 @@ export default function Builder() {
   const searchParams = useSearchParams();
   const query = searchParams.get("query");
   const [selectedFile, setSelectedFile] = useState<FileNode | null>(null);
-  const [FileNode, setFileNode] = useState<FileNode[]>(INITIAL_FILE_STRUCTURE);
+  const [fileNode, setFileNode] = useState<FileNode[]>([]);
   const [steps, setSteps] = useState<Step[]>([]);
   const webcontainer = useWebContainer();
 
@@ -39,6 +39,53 @@ export default function Builder() {
     fetchData();
   }, []);
 
+  useEffect(() => {
+    const createMountStructure = (files: FileNode[]): Record<string, any> => {
+      const mountStructure: Record<string, any> = {};
+  
+      const processFile = (file: FileNode, isRootFolder: boolean) => {  
+        if (file.type === 'folder') {
+          // For folders, create a directory entry
+          mountStructure[file.name] = {
+            directory: file.children ? 
+              Object.fromEntries(
+                file.children.map(child => [child.name, processFile(child, false)])
+              ) 
+              : {}
+          };
+        } else if (file.type === 'file') {
+          if (isRootFolder) {
+            mountStructure[file.name] = {
+              file: {
+                contents: file.content || ''
+              }
+            };
+          } else {
+            // For files, create a file entry with contents
+            return {
+              file: {
+                contents: file.content || ''
+              }
+            };
+          }
+        }
+  
+        return mountStructure[file.name];
+      };
+  
+      // Process each top-level file/folder
+      files.forEach(file => processFile(file, true));
+  
+      return mountStructure;
+    };
+  
+    const mountStructure = createMountStructure(fileNode);
+  
+    // Mount the structure if WebContainer is available
+    console.log(mountStructure);
+    webcontainer?.mount(mountStructure);
+  }, [fileNode, webcontainer]);
+
 
   const [activeView, setActiveView] = useState<'editor' | 'preview'>('editor');
   return (
@@ -50,7 +97,7 @@ export default function Builder() {
           <div className="flex flex-1 overflow-hidden">
             <ProgressSteps steps={steps.length > 0 ? steps : PROGRESS_STEPS} />
             <FileExplorer
-              FileNode={FileNode}
+              FileNode={fileNode}
               onFileSelect={setSelectedFile}
               selectedFile={selectedFile}
             />
@@ -78,7 +125,7 @@ export default function Builder() {
               {activeView === 'editor' ? (
                   <CodeEditor selectedFile={selectedFile} />
                 ) : (
-                  webcontainer && <PreviewFrame files={[]} webContainer={webcontainer} />
+                  webcontainer && <PreviewFrame webContainer={webcontainer} />
                 )}
               </div>
           </div>
