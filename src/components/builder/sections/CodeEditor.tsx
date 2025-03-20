@@ -8,7 +8,7 @@ interface CodeEditorProps {
   onChange?: (value: string | undefined) => void;
 }
 
-export default function CodeEditor({ 
+const CodeEditor = function ({ 
   selectedFile, 
   readOnly = true,
   onChange
@@ -37,3 +37,5 @@ export default function CodeEditor({
     </div>
   );
 } 
+
+export { CodeEditor }

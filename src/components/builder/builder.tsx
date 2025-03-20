@@ -4,13 +4,11 @@ import React, { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import {  template_endpoint } from "@/api";
 import { PROGRESS_STEPS, INITIAL_FILE_STRUCTURE } from "@/constants";
-import ProgressSteps from "./sections/ProgressSteps";
-import FileExplorer from "./sections/FileExplorer";
-import CodeEditor from "./sections/CodeEditor";
-import PromptField from "./sections/PromptField";
-import { Navbar, CapsuleToggle } from "../ui";
-import { FileNode, Step, StepType, StepStatus, templateAPIResponse } from "@/types";
+import { CodeEditor,FileExplorer, PreviewFrame, ProgressSteps, PromptField } from '@/components/builder/sections';
+import { Navbar, CapsuleToggle } from "@/components/ui";
 import { buildFileNodeTree } from "@/lib/utils";
+import { useWebContainer } from "@/hooks/webcontainer";
+import { FileNode, Step, StepType, StepStatus, templateAPIResponse } from "@/types";
  
 export default function Builder() {
   const searchParams = useSearchParams();
@@ -18,6 +16,7 @@ export default function Builder() {
   const [selectedFile, setSelectedFile] = useState<FileNode | null>(null);
   const [FileNode, setFileNode] = useState<FileNode[]>(INITIAL_FILE_STRUCTURE);
   const [steps, setSteps] = useState<Step[]>([]);
+  const webcontainer = useWebContainer();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -39,6 +38,8 @@ export default function Builder() {
 
     fetchData();
   }, []);
+
+
   const [activeView, setActiveView] = useState<'editor' | 'preview'>('editor');
   return (
     <div className="flex flex-col h-screen overflow-hidden">
@@ -74,7 +75,11 @@ export default function Builder() {
           </div>
           <div className="h-[calc(100%-3rem)] overflow-hidden">
               <div className="text-xl text-gray-800 h-full">
-                {activeView === 'editor' ? <CodeEditor selectedFile={selectedFile} /> : 'Preview Content'}
+              {activeView === 'editor' ? (
+                  <CodeEditor selectedFile={selectedFile} />
+                ) : (
+                  webcontainer && <PreviewFrame files={[]} webContainer={webcontainer} />
+                )}
               </div>
           </div>
         </div>

@@ -8,7 +8,7 @@ interface FileExplorerProps {
   selectedFile: FileNode | null;
 }
 
-export default function FileExplorer({ 
+const FileExplorer = function ({ 
   FileNode, 
   onFileSelect, 
   selectedFile 
@@ -86,3 +86,5 @@ export default function FileExplorer({
     </div>
   );
 } 
+
+export { FileExplorer }

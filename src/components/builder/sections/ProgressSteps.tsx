@@ -28,7 +28,7 @@ export interface StepObject {
 interface ProgressStepsProps {
   steps: Step[];
 }
-export default function ProgressSteps({ steps }: ProgressStepsProps) {
+const ProgressSteps = function ({ steps }: ProgressStepsProps) {
   const getStatusIcon = (status: StepStatus = StepStatus.PENDING) => {
     switch (status) {
       case StepStatus.COMPLETED:
@@ -149,3 +149,5 @@ export default function ProgressSteps({ steps }: ProgressStepsProps) {
     </div>
   );
 }
+
+export { ProgressSteps }

@@ -2,7 +2,7 @@
 import { TextArea } from "@/components/ui";
 import { useState } from "react";
 
-export default function PromptField() {
+const PromptField = function () {
   const [prompt, setPrompt] = useState("");
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -34,3 +34,5 @@ export default function PromptField() {
     </div>
   );
 }
+
+export { PromptField }
