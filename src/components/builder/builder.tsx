@@ -28,20 +28,28 @@ export default function Builder() {
   const [selectedFile, setSelectedFile] = useState<FileNode | null>(null);
   const [fileNode, setFileNode] = useState<FileNode[]>([]);
   const [steps, setSteps] = useState<Step[]>([]);
+  const [xmlFiles,setXmlFiles] =useState("")
   const [activeView, setActiveView] = useState<'editor' | 'preview'>('editor');
   const webcontainerState = useWebContainer(fileNode);
+
+
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const templateData: templateAPIResponse = await template_endpoint();
         if (templateData) {
-          console.log("Here is ", templateData);
           const updatedSteps = templateData.template.map((step) => ({
             ...step,
             status: StepStatus.PENDING,
             type: step.type as StepType,
           }));
+          let outputXML = ''
+          updatedSteps.forEach((step)=>{
+           const fileName =  step.path.split('/').pop()
+            outputXML +=`<FileNode path=${step.path} name=${fileName}> ${step.content} </FileNode> \n\n`
+          })
+          setXmlFiles(outputXML)
           setSteps(updatedSteps);
           setFileNode(buildFileNodeTree(updatedSteps));
         }
@@ -69,7 +77,7 @@ export default function Builder() {
             />
           </div>
           <div className="h-24 mt-2 pb-4 pt-2">
-            <PromptField />
+            <PromptField xmlFilesData={xmlFiles as string}/>
           </div>
         </div>
         <div className="flex-1 h-full overflow-hidden">
