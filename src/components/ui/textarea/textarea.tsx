@@ -1,5 +1,5 @@
+'use client'
 import React from 'react';
-
 interface TextAreaProps {
   value: string;
   onChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;

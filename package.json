@@ -12,6 +12,8 @@
     "@monaco-editor/react": "^4.7.0",
     "@webcontainer/api": "1.5.1-internal.10",
     "axios": "^1.8.3",
+    "file-saver": "^2.0.5",
+    "jszip": "^3.10.1",
     "lucide-react": "^0.482.0",
     "next": "15.2.2",
     "pnpm": "^10.6.3",
