@@ -16,7 +16,8 @@ export default function Builder() {
   const [selectedFile, setSelectedFile] = useState<FileNode | null>(null);
   const [fileNode, setFileNode] = useState<FileNode[]>([]);
   const [steps, setSteps] = useState<Step[]>([]);
-  const webcontainer = useWebContainer();
+  const [activeView, setActiveView] = useState<'editor' | 'preview'>('editor');
+  const webcontainerState = useWebContainer(fileNode);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -39,55 +40,7 @@ export default function Builder() {
     fetchData();
   }, []);
 
-  useEffect(() => {
-    const createMountStructure = (files: FileNode[]): Record<string, any> => {
-      const mountStructure: Record<string, any> = {};
   
-      const processFile = (file: FileNode, isRootFolder: boolean) => {  
-        if (file.type === 'folder') {
-          // For folders, create a directory entry
-          mountStructure[file.name] = {
-            directory: file.children ? 
-              Object.fromEntries(
-                file.children.map(child => [child.name, processFile(child, false)])
-              ) 
-              : {}
-          };
-        } else if (file.type === 'file') {
-          if (isRootFolder) {
-            mountStructure[file.name] = {
-              file: {
-                contents: file.content || ''
-              }
-            };
-          } else {
-            // For files, create a file entry with contents
-            return {
-              file: {
-                contents: file.content || ''
-              }
-            };
-          }
-        }
-  
-        return mountStructure[file.name];
-      };
-  
-      // Process each top-level file/folder
-      files.forEach(file => processFile(file, true));
-  
-      return mountStructure;
-    };
-  
-    const mountStructure = createMountStructure(fileNode);
-  
-    // Mount the structure if WebContainer is available
-    console.log(mountStructure);
-    webcontainer?.mount(mountStructure);
-  }, [fileNode, webcontainer]);
-
-
-  const [activeView, setActiveView] = useState<'editor' | 'preview'>('editor');
   return (
     <div className="flex flex-col h-screen overflow-hidden">
       <Navbar/>
@@ -125,7 +78,7 @@ export default function Builder() {
               {activeView === 'editor' ? (
                   <CodeEditor selectedFile={selectedFile} />
                 ) : (
-                  webcontainer && <PreviewFrame webContainer={webcontainer} />
+                  <PreviewFrame webContainer={webcontainerState} />
                 )}
               </div>
           </div>
