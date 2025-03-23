@@ -47,7 +47,7 @@ export default function Builder() {
           let outputXML = ''
           updatedSteps.forEach((step)=>{
            const fileName =  step.path.split('/').pop()
-            outputXML +=`<FileNode path=${step.path} name=${fileName}> ${step.content} </FileNode> \n\n`
+            outputXML +=`<FileNode path=${step.path} name=${fileName}> ${step.content} </FileNode> \\n \\n`
           })
           setXmlFiles(outputXML)
           setSteps(updatedSteps);
@@ -77,7 +77,7 @@ export default function Builder() {
             />
           </div>
           <div className="h-24 mt-2 pb-4 pt-2">
-            <PromptField xmlFilesData={xmlFiles as string}/>
+            <PromptField xmlFilesData={xmlFiles as string} components = {steps as Step[]}/>
           </div>
         </div>
         <div className="flex-1 h-full overflow-hidden">
