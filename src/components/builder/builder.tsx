@@ -21,13 +21,17 @@ import {
   StepStatus,
   templateAPIResponse,
 } from "@/types";
+import { Sidebar } from "../ui/sidebar/sidebar";
+import { InternalComponents } from "./sections/InternalComponents";
 
 export default function Builder() {
   const searchParams = useSearchParams();
+  const [isExpanded, setIsExpanded] = useState(true);
   const query = searchParams.get("query");
   const [selectedFile, setSelectedFile] = useState<FileNode | null>(null);
   const [fileNode, setFileNode] = useState<FileNode[]>([]);
   const [steps, setSteps] = useState<Step[]>([]);
+  const [currentPage, setCurrentPage] = useState<'code-editor' | 'components'>('code-editor');
   const [activeView, setActiveView] = useState<'editor' | 'preview'>('editor');
   const webcontainerState = useWebContainer(fileNode);
 
@@ -54,11 +58,21 @@ export default function Builder() {
   }, []);
 
   
-  return (
+  return (<>
+
+    <Navbar template={steps as Step[]} />
+    <div className="min-h-screen bg-gray-100 flex">
+    <Sidebar 
+      isExpanded={isExpanded} 
+      onToggle={() => setIsExpanded(!isExpanded)} 
+      onNavigate={setCurrentPage}
+      currentPage={currentPage}
+    />
+    {/* Main Content */}
+    <div className="flex-1">
     <div className="flex flex-col h-screen overflow-hidden">
-      <Navbar template={steps as Step[]} />
+    {currentPage === 'code-editor' ? (
       <div className="flex-1 bg-gray-900 text-white flex overflow-hidden">
-        {/* Steps sidebar */}
         <div className="h-full flex flex-col w-[40%]">
           <div className="flex flex-1 overflow-hidden">
             <ProgressSteps steps={steps.length > 0 ? steps : PROGRESS_STEPS} />
@@ -97,6 +111,12 @@ export default function Builder() {
           </div>
         </div>
       </div>
+    ):(<InternalComponents />) 
+  }
     </div>
+    </div>
+  </div>
+  </>
+
   );
 }
