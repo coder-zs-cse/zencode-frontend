@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { template_endpoint } from "@/api";
-import { PROGRESS_STEPS, INITIAL_FILE_STRUCTURE } from "@/constants";
+import { PROGRESS_STEPS } from "@/constants";
 import {
   CodeEditor,
   FileExplorer,
