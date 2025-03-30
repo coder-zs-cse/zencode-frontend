@@ -14,3 +14,7 @@ export interface userAPIResponse{
     id: string,
     indexingStatus:IndexingStatus,
 }
+
+export interface generateAPIResponse{
+    output:Step[]
+}

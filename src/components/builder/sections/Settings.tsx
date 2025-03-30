@@ -64,9 +64,9 @@ export function Settings() {
                   className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 text-white focus:ring-blue-500 focus:border-blue-500"
                   placeholder="ghp_xxxxxxxxxxxx"
                 />
-                <div className="flex justify-end gap-3 p-4 border-t pt-8">
+                <div className="flex justify-end gap-3 p-4 pt-8">
                   <button className="px-8 py-4 text-m font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 transition-colors">
-                    Save Changes
+                   Start Indexing
                   </button>
                 </div>
               </div>
