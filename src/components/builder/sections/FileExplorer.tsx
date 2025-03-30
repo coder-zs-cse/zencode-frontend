@@ -78,7 +78,7 @@ const FileExplorer = function ({
   };
 
   return (
-    <div className="w-64 bg-gray-800 border-x border-gray-700 overflow-y-auto">
+    <div className="w-64  border-x border-gray-700 overflow-y-auto">
       <div className="p-4">
         <h2 className="text-xl font-bold mb-4">Files</h2>
         {renderFileTree(FileNode)}

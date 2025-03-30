@@ -74,7 +74,7 @@ export default function Builder() {
         <div className="flex-1">
           <div className="flex flex-col h-screen">
             {currentPage === "code-editor" ? (
-              <div className="flex-1 bg-gray-900 text-white flex overflow-hidden">
+              <div className="flex-1 bg-gradient-to-r from-slate-950 to-slate-900 transition-all duration-200 animate-in fade-in text-white flex overflow-hidden">
                 <div className="h-screen flex flex-col w-[40%]">
                   <div className="flex h-[70%] overflow-hidden">
                     <ProgressSteps

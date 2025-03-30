@@ -4,7 +4,7 @@ import { envConfig } from "@/lib/config/env-config";
 
 export const find_user_endpoint = async (query: string) => {
     try {
-        const response = await axiosOpen.get(`${envConfig.DB_URL}/findOne?_id=${query}`,
+        const response = await axiosOpen.get(`${envConfig.DB_URL}/${query}`,
 
         );
         console.log("user endpoint", response);

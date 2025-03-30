@@ -14,7 +14,7 @@ const CodeEditor = function ({
   onChange
 }: CodeEditorProps) {
   return (
-    <div className="flex-1 bg-gray-900 ">
+    <div className="flex-1 ">
       
       {selectedFile ? (
         <Editor

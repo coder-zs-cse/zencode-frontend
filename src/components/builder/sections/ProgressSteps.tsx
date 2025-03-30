@@ -80,7 +80,7 @@ const ProgressSteps = function ({ steps }: ProgressStepsProps) {
 
       case StepType.RunScript:
         return (
-          <pre className="mt-2 p-4 bg-gray-800/50 text-gray-300 rounded-lg overflow-x-auto  border border-gray-700">
+          <pre className="mt-2 p-4 text-gray-300 rounded-lg overflow-x-auto  border border-gray-700">
             <code>{step.description}</code>
           </pre>
         );
@@ -96,10 +96,10 @@ const ProgressSteps = function ({ steps }: ProgressStepsProps) {
   };
 
   return (
-    <div className="h-full bg-gray-800 p-4 overflow-y-auto scrollable-content">
+    <div className="h-full  p-4 overflow-y-auto scrollable-content">
       <h2 className="text-xl font-bold mb-4">Progress</h2>
       <div className="space-y-3">
-        <div className="w-full max-w-3xl mx-auto bg-gray-800 rounded-xl shadow-xl shadow-black/20 p-6 border border-gray-700">
+        <div className="w-full max-w-3xl mx-auto bg-slate-900 rounded-xl shadow-xl shadow-black/20 p-6 border border-gray-700">
           <div className="space-y-6">
             {steps.map((step, index) => (
               <div key={index} className="relative">

@@ -57,7 +57,7 @@ export function Navbar({ template }: NavbarProps) {
     };
 
     const interval = setInterval(() => {
-      fetchData("67e9374a36b874365b795b13");
+      fetchData("67e98398c5607a4471049ef4");
     }, 10000);
 
     return () => clearInterval(interval); 

@@ -9,7 +9,7 @@ export function Settings() {
     <div className="p-8 bg-gray-900 h-screen overflow-y-auto scrollable-content">
       <h1 className="text-2xl font-semibold text-white mb-6">Settings</h1>
       <div>
-        <div className="p-4 space-y-6">
+        <div className="p-4 space-y-6 bg-gradient-to-r from-slate-950 to-slate-900 transition-all duration-200 animate-in fade-in rounded-xl">
           <div className="flex items-center justify-between py-2">
             <div className="flex flex-col">
               <span className="text-xl text-gray-200">Configure Library</span>
