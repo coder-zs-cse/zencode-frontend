@@ -19,7 +19,7 @@ interface ComponentDetailProps {
 
 export function ComponentDetail({ component, onClose }: ComponentDetailProps) {
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div className="fixed inset-0 backdrop-blur-xs flex items-center justify-center z-50">
       <div className="bg-white rounded-lg w-full max-w-2xl max-h-[90vh] overflow-y-auto">
         <div className="p-6">
           <div className="flex items-start justify-between">

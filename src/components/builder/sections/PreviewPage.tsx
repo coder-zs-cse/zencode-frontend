@@ -1,5 +1,5 @@
-import { WebContainer } from '@webcontainer/api';
-import React, { useEffect, useState } from 'react';
+import { WebContainer } from "@webcontainer/api";
+import React from "react";
 
 interface PreviewFrameProps {
   webContainer: {
@@ -10,7 +10,7 @@ interface PreviewFrameProps {
   };
 }
 
-const PreviewFrame = function({ webContainer }: PreviewFrameProps) {
+const PreviewFrame = function ({ webContainer }: PreviewFrameProps) {
   const { url, status, error } = webContainer;
 
   if (error) {
@@ -25,12 +25,14 @@ const PreviewFrame = function({ webContainer }: PreviewFrameProps) {
 
   return (
     <div className="h-full flex items-center justify-center text-gray-400">
-      {!url && <div className="text-center">
-        <p className="mb-2">{status}</p>
-      </div>}
+      {!url && (
+        <div className="text-center">
+          <p className="mb-2">{status}</p>
+        </div>
+      )}
       {url && <iframe width={"100%"} height={"100%"} src={url} />}
     </div>
   );
-} 
+};
 
-export { PreviewFrame }
+export { PreviewFrame };

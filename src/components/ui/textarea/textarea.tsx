@@ -13,6 +13,6 @@ export const TextArea: React.FC<TextAreaProps> = ({ value, onChange, placeholder
     onChange={onChange}
     placeholder={placeholder}
     onKeyDown={onKeyDown}
-    className="w-full h-32 px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-white placeholder-gray-400 resize-none"
+    className="w-full h-24 px-4 py-3 bg-gray-800 text-white placeholder-gray-400 resize-none"
   />
 );
