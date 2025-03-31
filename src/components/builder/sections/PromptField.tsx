@@ -1,24 +1,43 @@
-import React, { useEffect, useState } from 'react';
-import { SendHorizontal, Plus, X, Check } from 'lucide-react';
+import React, { useEffect, useState } from "react";
+import { SendHorizontal, Plus, X, Check } from "lucide-react";
+import { generateAPIRequest } from "@/types/api-request";
+import { generate_endpoint } from "@/api/generate/generate";
+import { find_components_endpoint } from "@/api/library/library";
+import { Component } from "./InternalComponents";
+import { FileNode } from "@/types";
+import { FileNode as FileNodeStruct } from "@/types/api-request";
+import { buildFileNodeTree } from "@/lib/utils/parsing";
 
-interface Step {
-  id: string;
-  title: string;
-  path: string;
+let request: generateAPIRequest = {
+  query_text: "",
+  conversation: [],
+  codebase: [],
+  forcedComponents: [],
+  enableAISelection: true,
+};
+
+interface PromptFieldProps {
+  fileNode: FileNode[];
 }
 
-interface PromptProps {
-  components: Step[];
-}
-
-let request: any | null = null;
-
-const PromptField = function ({ components }: PromptProps) {
+const PromptField = function ({ fileNode }: PromptFieldProps) {
   const [prompt, setPrompt] = useState("");
   const [isOpen, setIsOpen] = useState(false);
-  const [enableAI, setEnableAI] = useState(false);
-  const [selectedComponents, setSelectedComponents] = useState<Set<string>>(new Set());
+  const [enableAI, setEnableAI] = useState(true);
+  const [selectedComponents, setSelectedComponents] = useState<string[]>([]);
+  const [forcedComponents, setForcedComponents] = useState<Component[]>([]);
 
+  const convertFileNode = (currentSteps: FileNode[]) => {
+    const fileNodes: FileNodeStruct[] = [];
+    currentSteps.forEach((step) => {
+      fileNodes.push({
+        fileName: step.name.replace("Creating file ", ""),
+        fileContent: step.content,
+        filePath: step.path,
+      });
+    });
+    return fileNodes;
+  };
   const toggleComponent = (id: string) => {
     const newSelected = new Set(selectedComponents);
     if (newSelected.has(id)) {
@@ -26,32 +45,50 @@ const PromptField = function ({ components }: PromptProps) {
     } else {
       newSelected.add(id);
     }
-    setSelectedComponents(newSelected);
+    setSelectedComponents(Array.from(newSelected));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (prompt.trim()) {
-      console.log("success");
+    if (prompt.trim() && request) {
+      const codebase = convertFileNode(fileNode);
+      request = {
+        ...request,
+        query_text: prompt,
+        forcedComponents: selectedComponents,
+        enableAISelection: enableAI,
+        codebase: codebase,
+      };
+      try {
+        const generateData = await generate_endpoint(request);
+        const newFileNode = buildFileNodeTree(
+          generateData.generated_code.steps
+        );
+        const codebase = convertFileNode(newFileNode);
+        request = {
+          ...request,
+          forcedComponents: [],
+          codebase: codebase,
+          conversation: generateData.conversation,
+        };
+        console.log("success:", generateData);
+      } catch (error) {
+        console.log("error in generating data", error);
+      }
     }
   };
 
   useEffect(() => {
-    const responseData = async (request: any | null) => {
+    async function fetchData() {
       try {
-        if (request !== null) {
-          // const generateData = await generate_endpoint(request);
-          console.log("Generating data...");
-        }
+        const components = await find_components_endpoint();
+        setForcedComponents(components);
       } catch (error) {
-        console.error("Error calling endpoints:", error);
+        console.log("error in fetching forced components", error);
       }
-    };
-    if (enableAI) {
-      console.log("Generating data");
-      responseData(request);
     }
-  }, [enableAI]);
+    fetchData();
+  }, []);
 
   return (
     <div className="flex-1 border bg-slate-900 border-gray-700 rounded-2xl">
@@ -62,25 +99,25 @@ const PromptField = function ({ components }: PromptProps) {
           </h3>
 
           <div className="space-y-2">
-            {components.map((component) => (
+            {forcedComponents.map((component) => (
               <label
-                key={component.id}
+                key={component.componentPath}
                 className="flex items-center space-x-3 p-2 hover:bg-slate-800/50 rounded-md cursor-pointer transition-all group"
               >
-                <div 
+                <div
                   className={`relative w-5 h-5 border-2 rounded flex items-center justify-center transition-all duration-200 ${
-                    selectedComponents.has(component.title)
-                      ? 'border-green-500 bg-green-600'
-                      : 'border-gray-400 group-hover:border-gray-300'
+                    selectedComponents.includes(component.componentPath)
+                      ? "border-green-500 bg-green-600"
+                      : "border-gray-400 group-hover:border-gray-300"
                   }`}
-                  onClick={() => toggleComponent(component.title)}
+                  onClick={() => toggleComponent(component.componentPath)}
                 >
-                  {selectedComponents.has(component.title) && (
+                  {selectedComponents.includes(component.componentPath) && (
                     <Check size={14} className="text-white" />
                   )}
                 </div>
                 <span className="text-white text-sm flex-1">
-                  {component.path.split("/").pop()}
+                  {component.componentPath.split("/").pop()}
                 </span>
               </label>
             ))}
@@ -134,7 +171,9 @@ const PromptField = function ({ components }: PromptProps) {
         <button
           onClick={() => setIsOpen(!isOpen)}
           className="bg-blue-500 hover:bg-blue-600 px-2 py-2 m-2 rounded-lg transition-colors duration-200 text-white"
-          aria-label={isOpen ? "Close component selector" : "Open component selector"}
+          aria-label={
+            isOpen ? "Close component selector" : "Open component selector"
+          }
         >
           {isOpen ? <X size={20} /> : <Plus size={20} />}
         </button>

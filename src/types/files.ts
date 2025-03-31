@@ -6,7 +6,7 @@ export interface FileNode {
   name: string;
   type: FileNodeType;
   children?: FileNode[];
-  content?: string;
+  content: string;
   path: string;
 }
 

@@ -87,7 +87,7 @@ export default function Builder() {
                     />
                   </div>
                   <div className="h-24 mt-2 pb-4 pt-2">
-                    <PromptField components = {steps as Step[]} />
+                    <PromptField fileNode={fileNode as FileNode[]} />
                   </div>
                 </div>
                 <div className="flex-1 h-full overflow-hidden">

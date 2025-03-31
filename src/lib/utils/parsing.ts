@@ -7,6 +7,7 @@ export function buildFileNodeTree(steps: Step[]): FileNode[] {
     type: FileNodeType.folder,
     children: [],
     path: "",
+    content:""
   };
 
   // Process each step
@@ -39,6 +40,7 @@ export function buildFileNodeTree(steps: Step[]): FileNode[] {
           name: segment,
           type: FileNodeType.folder,
           children: [],
+          content:"",
           path: currentPath,
         };
         currentNode.children = currentNode.children || [];

@@ -20,6 +20,6 @@ export interface Step {
   description: string;
   type: StepType;
   status: StepStatus;
-  content?: string;
+  content: string;
   path: string;
 }

@@ -1,10 +1,27 @@
+import { training_endpoint } from "@/api";
 import React, { useState } from "react";
 
 export function Settings() {
+  const handleOnSubmit = async () => {
+    if (!repoUrl || repoUrl.trim() === "") {
+      alert("Please enter a valid GitHub Repository URL.");
+      return;
+    }
+    const requestBody = {
+      github_url: repoUrl,
+      access_token: authToken || "",
+    };
+    try {
+      const response = await training_endpoint(requestBody);
+      console.log("Indexing started successfully:", response);
+    } catch (error) {
+      console.error("Error starting indexing:", error);
+    }
+  };
+
   const [repoUrl, setRepoUrl] = useState("");
   const [authToken, setAuthToken] = useState("");
   const [showInternalConfig, setShowInternalConfig] = useState(false);
-
   return (
     <div className="p-8 bg-gray-900 h-screen overflow-y-auto scrollable-content">
       <h1 className="text-2xl font-semibold text-white mb-6">Settings</h1>
@@ -65,8 +82,11 @@ export function Settings() {
                   placeholder="ghp_xxxxxxxxxxxx"
                 />
                 <div className="flex justify-end gap-3 p-4 pt-8">
-                  <button className="px-8 py-4 text-m font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 transition-colors">
-                   Start Indexing
+                  <button
+                    className="hover:cursor-pointer px-8 py-4 text-m font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 transition-colors "
+                    onClick={handleOnSubmit}
+                  >
+                    Start Indexing
                   </button>
                 </div>
               </div>
