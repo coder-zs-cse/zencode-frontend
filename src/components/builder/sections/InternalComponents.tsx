@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { ComponentCard } from "@/components/ui/card-component/card-component";
 import { ComponentDetail } from "@/components/ui/details-component/details-component";
+import { find_components_endpoint } from "@/api/library/library";
 
 export interface Component {
   componentName: string;
@@ -164,20 +165,39 @@ export function InternalComponents() {
   const [selectedComponent, setSelectedComponent] = useState<Component | null>(
     null
   );
+  const [componentList, setComponentList] = useState<Component[]>([]);
+
+  async function fetchData() {
+    try {
+      const components = await find_components_endpoint();
+      setComponentList(components);
+    } catch (error) {
+      console.log("error in fetching internal components", error);
+    }
+  }
+  useEffect(() => {
+    fetchData();
+  }, []);
 
   return (
     <div className="p-8 bg-slate-900 h-screen overflow-y-auto scrollable-content">
       <h1 className="text-2xl font-semibold text-white mb-6">Library</h1>
       <div className="flex flex-wrap">
-        {components.map((component) => (
-          <div key={component.componentName} className="w-1/4 p-2">
-            <ComponentCard
-              key={component.componentName}
-              component={component}
-              onClick={() => setSelectedComponent(component)}
-            />
+        {componentList.length > 0 ? (
+          componentList.map((component) => (
+            <div key={component.componentName} className="w-1/4 p-2">
+              <ComponentCard
+                key={component.componentName}
+                component={component}
+                onClick={() => setSelectedComponent(component)}
+              />
+            </div>
+          ))
+        ) : (
+          <div className="w-full text-center text-white py-8">
+            Please index your internal library
           </div>
-        ))}
+        )}
       </div>
 
       {selectedComponent && (

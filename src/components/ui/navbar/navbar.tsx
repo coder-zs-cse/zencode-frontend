@@ -43,27 +43,39 @@ function IndexingIndicator(userResponse : {indexingStatus:string | undefined}) {
 }
 
 export function Navbar({ template }: NavbarProps) {
+  const [userResponse, setUserData] = useState<userAPIResponse | null>(null);
+  const [successPopup, setSuccessPopup] = useState(false);
+
+  const fetchData = async () => {
+    try {
+      const userData = await find_user_endpoint();
+      if (userData) {
+        setUserData(userData);
+        console.log("User Details", userData);
+      }
+    } catch (error) {
+      console.error("Error calling endpoints:", error);
+    }
+  };
+
   useEffect(() => {
-    const fetchData = async (query: string) => {
-      try {
-        const userData = await find_user_endpoint(query);
-        if (userData) {
-          setUserData(userData);
-          console.log("User Details", userData);
-        }
-      } catch (error) {
-        console.error("Error calling endpoints:", error);
+    // Initial fetch
+    fetchData();
+
+    let interval: NodeJS.Timeout | null = null;
+
+    // Only set up interval if status is IN_PROGRESS
+    if (userResponse?.indexingStatus === indexingValues.IN_PROGRESS) {
+      interval = setInterval(fetchData, 10000);
+    }
+
+    return () => {
+      if (interval) {
+        clearInterval(interval);
       }
     };
+  }, [userResponse?.indexingStatus]); // Dependency on indexingStatus
 
-    const interval = setInterval(() => {
-      fetchData("67e98398c5607a4471049ef4");
-    }, 10000);
-
-    return () => clearInterval(interval); 
-  }, []);
-   const [userResponse,setUserData] = useState<userAPIResponse | null>(null)
-  const [successPopup, setSuccessPopup] = useState(false);
   const handleExport = async () => {
     const status = await exportToZip({ template });
     setSuccessPopup(status);

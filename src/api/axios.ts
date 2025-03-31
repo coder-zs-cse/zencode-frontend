@@ -1,4 +1,3 @@
-
 import axios, {
     AxiosInstance,
     AxiosError,
@@ -17,7 +16,10 @@ import axios, {
         "Content-Type": "application/json",
         Accept: "application/json",
       },
+      withCredentials: true,
     });
+  
+    instance.defaults.headers.common['Access-Control-Expose-Headers'] = 'x-user-id';
   
     if (secure) {
       instance.interceptors.request.use(
@@ -37,15 +39,14 @@ import axios, {
 
       instance.interceptors.response.use(
         (response) => {
-            const newUserId = response.headers['x-user-id'];
-            console.log("newUserId in response", newUserId)
-            if (newUserId) {
-                localStorage.setItem("userId", newUserId);
-            }
-            return response;
+          const newUserId = response.headers['x-user-id'];
+          if (newUserId) {
+              localStorage.setItem("userId", newUserId);
+          }
+          return response;
         },
         (error: AxiosError) => Promise.reject(error)
-    );
+      );
     }
   
     return instance;

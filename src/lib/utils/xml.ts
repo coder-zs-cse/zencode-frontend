@@ -47,6 +47,7 @@ export function parseXml(response: string): Step[] {
     // Add initial artifact step
     steps.push({
       id: stepId++,
+      path: "",
       title: artifactTitle,
       description: '',
       type: StepType.CreateFolder,
@@ -76,6 +77,7 @@ export function parseXml(response: string): Step[] {
         steps.push({
           id: stepId++,
           title: 'Run command',
+          path: filePath,
           description: '',
           type: StepType.RunScript,
           status: StepStatus.PENDING,

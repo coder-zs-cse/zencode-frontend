@@ -5,7 +5,7 @@ interface EnvConfig {
 
 export const envConfig: EnvConfig = {
     BASE_URL: process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:8000/api",
-    DB_URL: process.env.NEXT_PARSER_URL || "http://localhost:4000/api/githubcollections",
+    DB_URL: process.env.NEXT_PARSER_URL || "http://localhost:4000/api",
 };
 
 export function validateEnvConfig(): void {
