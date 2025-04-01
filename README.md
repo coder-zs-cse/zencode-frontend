@@ -73,7 +73,19 @@ pnpm run dev
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
 ---
+# **User Interfaces :**:
 
+## Code Editor Page 
+<img width="1470" alt="Screenshot 2025-04-01 at 5 25 14 PM" src="https://github.com/user-attachments/assets/9d594cf7-bd5a-4ee7-afc3-95006762536d" />
+
+## Library Page 
+<img width="1470" alt="Screenshot 2025-04-01 at 5 25 42 PM" src="https://github.com/user-attachments/assets/4e966fe4-4ed9-4c17-ad40-107b546392d3" />
+<img width="1470" alt="Screenshot 2025-04-01 at 5 26 05 PM" src="https://github.com/user-attachments/assets/4e560a2e-5dd1-4d6a-9a62-e9c568c6e31d" />
+
+## Setting Page
+<img width="1470" alt="Screenshot 2025-04-01 at 5 26 21 PM" src="https://github.com/user-attachments/assets/d57dd3d9-7e29-4dbf-a0c1-ef4fbe4b8797" />
+
+---
 # 🤝 **Team & Contributions**:
 This project was brought to life by: Goemkars
 
