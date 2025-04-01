@@ -12,7 +12,7 @@ import {
   PromptField,
 } from "@/components/builder/sections";
 import { Navbar, CapsuleToggle } from "@/components/ui";
-import { buildFileNodeTree } from "@/lib/utils";
+import { buildFileNodeTree, applyStepsToCodebase } from "@/lib/utils/parsing";
 import { useWebContainer } from "@/hooks/webcontainer";
 import {
   FileNode,
@@ -31,7 +31,7 @@ export default function Builder() {
   const query = searchParams.get("query");
   const [selectedFile, setSelectedFile] = useState<FileNode | null>(null);
   const [fileNode, setFileNode] = useState<FileNode[]>([]);
-  const [steps, setSteps] = useState<Step[]>([]);
+  const [stepSets, setStepSets] = useState<Step[][]>([]);
   const [currentPage, setCurrentPage] = useState<
     "code-editor" | "components" | "settings"
   >("code-editor");
@@ -49,7 +49,7 @@ export default function Builder() {
             status: StepStatus.PENDING,
             type: step.type as StepType,
           }));
-          setSteps(updatedSteps);
+          setStepSets([[...updatedSteps]]);
           setFileNode(buildFileNodeTree(updatedSteps));
         }
       } catch (error) {
@@ -60,9 +60,14 @@ export default function Builder() {
     fetchData();
   }, []);
 
+  const addNewSteps = (newSteps: Step[]) => {
+    setStepSets((prevSets) => [...prevSets, newSteps]);
+    setFileNode((currentFiles) => applyStepsToCodebase(currentFiles, newSteps));
+  };
+
   return (
     <div className="h-screen">
-      <Navbar template={steps as Step[]} />
+      <Navbar template={stepSets[stepSets.length - 1] || []} />
       <div className="h-screen bg-gray-100 flex">
         <Sidebar
           isExpanded={isExpanded}
@@ -77,9 +82,7 @@ export default function Builder() {
               <div className="flex-1 bg-gradient-to-r from-slate-950 to-slate-900 transition-all duration-200 animate-in fade-in text-white flex overflow-hidden">
                 <div className="h-screen flex flex-col w-[40%]">
                   <div className="flex h-[70%] overflow-hidden">
-                    <ProgressSteps
-                      steps={steps.length > 0 ? steps : PROGRESS_STEPS}
-                    />
+                    <ProgressSteps stepSets={stepSets} />
                     <FileExplorer
                       FileNode={fileNode}
                       onFileSelect={setSelectedFile}
@@ -87,7 +90,12 @@ export default function Builder() {
                     />
                   </div>
                   <div className="h-24 mt-2 pb-4 pt-2">
-                    <PromptField fileNode={fileNode as FileNode[]} />
+                    <PromptField 
+                      fileNode={fileNode} 
+                      onNewSteps={(steps) => {
+                        addNewSteps(steps);
+                      }} 
+                    />
                   </div>
                 </div>
                 <div className="flex-1 h-full overflow-hidden">

@@ -26,9 +26,10 @@ export interface StepObject {
 }
 
 interface ProgressStepsProps {
-  steps: Step[];
+  stepSets: Step[][];
 }
-const ProgressSteps = function ({ steps }: ProgressStepsProps) {
+
+const ProgressSteps = function ({ stepSets }: ProgressStepsProps) {
   const getStatusIcon = (status: StepStatus = StepStatus.PENDING) => {
     switch (status) {
       case StepStatus.COMPLETED:
@@ -96,55 +97,62 @@ const ProgressSteps = function ({ steps }: ProgressStepsProps) {
   };
 
   return (
-    <div className="h-full  p-4 overflow-y-auto scrollable-content">
+    <div className="h-full p-4 overflow-y-auto scrollable-content">
       <h2 className="text-xl font-bold mb-4">Progress</h2>
-      <div className="space-y-3">
-        <div className="w-full max-w-3xl mx-auto bg-slate-900 rounded-xl shadow-xl shadow-black/20 p-6 border border-gray-700">
-          <div className="space-y-6">
-            {steps.map((step, index) => (
-              <div key={index} className="relative">
-                <div className="flex items-start gap-4">
-                  {/* Timeline line */}
-                  {index < steps.length - 1 && (
-                    <div
-                      className={`absolute top-10 left-5 w-0.5 h-full -ml-0.5 ${
-                        step.status === StepStatus.COMPLETED
-                          ? "bg-green-900/50"
-                          : step.status === StepStatus.IN_PROGRESS
-                          ? "bg-blue-900/50"
-                          : "bg-gray-700"
-                      }`}
-                    />
-                  )}
+      <div className="space-y-6">
+        {stepSets.map((steps, setIndex) => (
+          <div key={setIndex} className="w-full max-w-3xl mx-auto bg-slate-900 rounded-xl shadow-xl shadow-black/20 p-6 border border-gray-700">
+            {setIndex > 0 && (
+              <div className="mb-4 pb-4 border-b border-gray-700">
+                <span className="text-sm text-gray-400">Step Set {setIndex + 1}</span>
+              </div>
+            )}
+            <div className="space-y-6">
+              {steps.map((step, index) => (
+                <div key={index} className="relative">
+                  <div className="flex items-start gap-4">
+                    {/* Timeline line */}
+                    {index < steps.length - 1 && (
+                      <div
+                        className={`absolute top-10 left-5 w-0.5 h-full -ml-0.5 ${
+                          step.status === StepStatus.COMPLETED
+                            ? "bg-green-900/50"
+                            : step.status === StepStatus.IN_PROGRESS
+                            ? "bg-blue-900/50"
+                            : "bg-gray-700"
+                        }`}
+                      />
+                    )}
 
-                  {/* Icon */}
-                  <div className="relative z-10">
-                    <div
-                      className={`p-2 rounded-lg ${getStatusColor(
-                        step.status
-                      )}`}
-                    >
-                      <StepIcon type={step.type} />
-                    </div>
-                  </div>
-
-                  {/* Content */}
-                  <div className="flex-1">
-                    <div className="flex items-center justify-between mb-2">
-                      <h3 className="font-medium text-gray-200">
-                        {step.title || step.type}
-                      </h3>
-                      <div className="flex items-center">
-                        {getStatusIcon(step.status)}
+                    {/* Icon */}
+                    <div className="relative z-10">
+                      <div
+                        className={`p-2 rounded-lg ${getStatusColor(
+                          step.status
+                        )}`}
+                      >
+                        <StepIcon type={step.type} />
                       </div>
                     </div>
-                    <StepContent step={step} />
+
+                    {/* Content */}
+                    <div className="flex-1">
+                      <div className="flex items-center justify-between mb-2">
+                        <h3 className="font-medium text-gray-200">
+                          {step.title || step.type}
+                        </h3>
+                        <div className="flex items-center">
+                          {getStatusIcon(step.status)}
+                        </div>
+                      </div>
+                      <StepContent step={step} />
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
-        </div>
+        ))}
       </div>
     </div>
   );

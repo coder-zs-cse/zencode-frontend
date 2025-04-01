@@ -4,9 +4,9 @@ import { generateAPIRequest } from "@/types/api-request";
 import { generate_endpoint } from "@/api/generate/generate";
 import { find_components_endpoint } from "@/api/library/library";
 import { Component } from "./InternalComponents";
-import { FileNode } from "@/types";
-import { FileNode as FileNodeStruct } from "@/types/api-request";
-import { buildFileNodeTree } from "@/lib/utils/parsing";
+import { FileNode, Step, StepStatus, StepType } from "@/types";
+import { flattenFileNodes } from "@/lib/utils/parsing";
+import { Loader } from "@/components/ui/loader/loader";
 
 let request: generateAPIRequest = {
   query_text: "",
@@ -18,26 +18,17 @@ let request: generateAPIRequest = {
 
 interface PromptFieldProps {
   fileNode: FileNode[];
+  onNewSteps: (steps: Step[]) => void;
 }
 
-const PromptField = function ({ fileNode }: PromptFieldProps) {
+const PromptField = function ({ fileNode, onNewSteps }: PromptFieldProps) {
   const [prompt, setPrompt] = useState("");
   const [isOpen, setIsOpen] = useState(false);
   const [enableAI, setEnableAI] = useState(true);
   const [selectedComponents, setSelectedComponents] = useState<string[]>([]);
   const [forcedComponents, setForcedComponents] = useState<Component[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const convertFileNode = (currentSteps: FileNode[]) => {
-    const fileNodes: FileNodeStruct[] = [];
-    currentSteps.forEach((step) => {
-      fileNodes.push({
-        fileName: step.name.replace("Creating file ", ""),
-        fileContent: step.content,
-        filePath: step.path,
-      });
-    });
-    return fileNodes;
-  };
   const toggleComponent = (id: string) => {
     const newSelected = new Set(selectedComponents);
     if (newSelected.has(id)) {
@@ -50,31 +41,40 @@ const PromptField = function ({ fileNode }: PromptFieldProps) {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (prompt.trim() && request) {
-      const codebase = convertFileNode(fileNode);
+    if (!prompt.trim() || isLoading) return;
+
+    setIsLoading(true);
+    try {
+      const flattenedFiles = flattenFileNodes(fileNode);
       request = {
         ...request,
         query_text: prompt,
         forcedComponents: selectedComponents,
         enableAISelection: enableAI,
-        codebase: codebase,
+        codebase: flattenedFiles,
       };
-      try {
-        const generateData = await generate_endpoint(request);
-        const newFileNode = buildFileNodeTree(
-          generateData.generated_code.steps
-        );
-        const codebase = convertFileNode(newFileNode);
-        request = {
-          ...request,
-          forcedComponents: [],
-          codebase: codebase,
-          conversation: generateData.conversation,
-        };
-        console.log("success:", generateData);
-      } catch (error) {
-        console.log("error in generating data", error);
-      }
+
+      const generateData = await generate_endpoint(request);
+      const newSteps = generateData.generated_code.steps.map(step => ({
+        ...step,
+        status: step.status || StepStatus.COMPLETED,
+        type: step.type as StepType,
+      }));
+
+      onNewSteps(newSteps);
+      
+      request = {
+        ...request,
+        forcedComponents: [],
+        codebase: flattenedFiles,
+        conversation: generateData.conversation,
+      };
+
+      setPrompt(""); // Clear the prompt after successful submission
+    } catch (error) {
+      console.log("error in generating data", error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -164,9 +164,10 @@ const PromptField = function ({ fileNode }: PromptFieldProps) {
         <button
           type="button"
           onClick={handleSubmit}
-          className="bg-blue-500 hover:bg-blue-600 px-2 py-2 m-2 rounded-lg transition-colors duration-200 text-white"
+          disabled={isLoading}
+          className="bg-blue-500 hover:bg-blue-600 disabled:bg-blue-400 px-2 py-2 m-2 rounded-lg transition-colors duration-200 text-white"
         >
-          <SendHorizontal size={20} />
+          {isLoading ? <Loader size="sm" /> : <SendHorizontal size={20} />}
         </button>
         <button
           onClick={() => setIsOpen(!isOpen)}

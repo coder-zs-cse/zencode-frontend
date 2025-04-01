@@ -1,14 +1,14 @@
 import { GENERATE_END_POINT } from "@/constants/api-constants";
 import { envConfig } from "@/lib/config/env-config";
 import { generateAPIResponse } from "@/types/api-response";
-import axios from "axios";
 import { generateAPIRequest } from '../../types/api-request';
+import { axiosSecure } from "../axios";
 
 export async function generate_endpoint(
   request: generateAPIRequest
 ): Promise<generateAPIResponse> {
   try {
-    const response = await axios.post(
+    const response = await axiosSecure.post(
       `${envConfig.BASE_URL}/${GENERATE_END_POINT}`,
       request
     );
