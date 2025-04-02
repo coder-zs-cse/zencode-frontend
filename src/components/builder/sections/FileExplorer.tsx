@@ -65,7 +65,7 @@ const FileExplorer = function ({
       return (
         <div
           key={currentPath}
-          className={`flex items-center gap-2 py-1 px-2 hover:bg-gray-700 cursor-pointer ${
+          className={`flex items-center gap-2 py-1 px-2 hover:bg-gray-700 w-[60%] cursor-pointer ${
             selectedFile?.path === currentPath ? 'bg-gray-700' : ''
           }`}
           onClick={() => onFileSelect(item)}
@@ -78,7 +78,7 @@ const FileExplorer = function ({
   };
 
   return (
-    <div className="w-64  border-x border-gray-700 overflow-y-auto">
+    <div className="w-64  border-x border-gray-700 overflow-y-auto w-[50%] scrollable-content">
       <div className="p-4">
         <h2 className="text-xl font-bold mb-4">Files</h2>
         {renderFileTree(FileNode)}

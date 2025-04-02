@@ -63,12 +63,10 @@ const ProgressSteps = function ({ stepSets }: ProgressStepsProps) {
         return <FileX className={iconClass} />;
       case StepType.EditFile:
         return <FileText className={iconClass} />;
-      case StepType.RunScript:
-        return <Terminal className={iconClass} />;
       case StepType.InternalComponentImport:
         return <Component className={iconClass} />;
       default:
-        return <MessageSquare className={iconClass} />;
+        // return <MessageSquare className={iconClass} />;
     }
   };
 
@@ -79,12 +77,6 @@ const ProgressSteps = function ({ stepSets }: ProgressStepsProps) {
     }
     switch (step.type) {
 
-      case StepType.RunScript:
-        return (
-          <pre className="mt-2 p-4 text-gray-300 rounded-lg overflow-x-auto  border border-gray-700">
-            <code>{step.description}</code>
-          </pre>
-        );
       case StepType.TextDisplay:
         return <p className="mt-2 text-gray-400">{step.description}</p>;
       default:
@@ -97,7 +89,7 @@ const ProgressSteps = function ({ stepSets }: ProgressStepsProps) {
   };
 
   return (
-    <div className="h-full p-4 overflow-y-auto scrollable-content">
+    <div className="h-full p-4 overflow-y-auto scrollable-content w-[50%]">
       <h2 className="text-xl font-bold mb-4">Progress</h2>
       <div className="space-y-6">
         {stepSets.map((steps, setIndex) => (
@@ -110,44 +102,50 @@ const ProgressSteps = function ({ stepSets }: ProgressStepsProps) {
             <div className="space-y-6">
               {steps.map((step, index) => (
                 <div key={index} className="relative">
-                  <div className="flex items-start gap-4">
-                    {/* Timeline line */}
-                    {index < steps.length - 1 && (
-                      <div
-                        className={`absolute top-10 left-5 w-0.5 h-full -ml-0.5 ${
-                          step.status === StepStatus.COMPLETED
-                            ? "bg-green-900/50"
-                            : step.status === StepStatus.IN_PROGRESS
-                            ? "bg-blue-900/50"
-                            : "bg-gray-700"
-                        }`}
-                      />
-                    )}
-
-                    {/* Icon */}
-                    <div className="relative z-10">
-                      <div
-                        className={`p-2 rounded-lg ${getStatusColor(
-                          step.status
-                        )}`}
-                      >
-                        <StepIcon type={step.type} />
-                      </div>
+                  {step.type === StepType.TextDisplay ? (
+                    <div className="ml-4">
+                      <p className="text-white">{step.content}</p>
                     </div>
+                  ) : (
+                    <div className="flex items-start gap-4">
+                      {/* Timeline line */}
+                      {index < steps.length - 1 && (
+                        <div
+                          className={`absolute top-10 left-5 w-0.5 h-full -ml-0.5 ${
+                            step.status === StepStatus.COMPLETED
+                              ? "bg-green-900/50"
+                              : step.status === StepStatus.IN_PROGRESS
+                              ? "bg-blue-900/50"
+                              : "bg-gray-700"
+                          }`}
+                        />
+                      )}
 
-                    {/* Content */}
-                    <div className="flex-1">
-                      <div className="flex items-center justify-between mb-2">
-                        <h3 className="font-medium text-gray-200">
-                          {step.title || step.type}
-                        </h3>
-                        <div className="flex items-center">
-                          {getStatusIcon(step.status)}
+                      {/* Icon */}
+                      <div className="relative z-10">
+                        <div
+                          className={`p-2 rounded-lg ${getStatusColor(
+                            step.status
+                          )}`}
+                        >
+                          <StepIcon type={step.type} />
                         </div>
                       </div>
-                      <StepContent step={step} />
+
+                      {/* Content */}
+                      <div className="flex-1">
+                        <div className="flex items-center justify-between mb-2">
+                          <h3 className="font-medium text-gray-200">
+                            {step.title || step.type}
+                          </h3>
+                          <div className="flex items-center">
+                            {getStatusIcon(step.status)}
+                          </div>
+                        </div>
+                        <StepContent step={step} />
+                      </div>
                     </div>
-                  </div>
+                  )}
                 </div>
               ))}
             </div>

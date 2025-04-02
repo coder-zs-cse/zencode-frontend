@@ -17,7 +17,6 @@ const indexingValues = {
   COMPLETED: "COMPLETED",
 };
 function IndexingIndicator(userResponse : {indexingStatus:string | undefined}) {
-  console.log("UserData inside indicator",userResponse)
   return (
     <div className="flex items-center gap-2">
       {userResponse.indexingStatus === indexingValues.NOT_STARTED ? (
@@ -83,9 +82,8 @@ export function Navbar({ template }: NavbarProps) {
   };
   return (
     <>
-      <nav className="bg-[#0A1A2F] border-b border-[#1E3A5F] px-4">
-        <div className=" mx-2">
-          <div className="flex justify-between h-16">
+      <nav className="bg-[#0A1A2F] border-b border-[#1E3A5F] px-4 h-[8%] flex flex-col justify-between items-center">
+          <div className="flex justify-between mx-2 w-full h-full">
             <div className="flex items-center">
               <span className="text-2xl font-bold text-white tracking-tight mr-8">
                 ZenCode AI
@@ -102,7 +100,6 @@ export function Navbar({ template }: NavbarProps) {
                 Export
               </button>
             </div>
-          </div>
         </div>
       </nav>
 

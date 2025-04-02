@@ -27,7 +27,7 @@ import { Settings } from "./sections/Settings";
 
 export default function Builder() {
   const searchParams = useSearchParams();
-  const [isExpanded, setIsExpanded] = useState(true);
+  const [isExpanded, setIsExpanded] = useState(false);
   const query = searchParams.get("query");
   const [selectedFile, setSelectedFile] = useState<FileNode | null>(null);
   const [fileNode, setFileNode] = useState<FileNode[]>([]);
@@ -46,7 +46,7 @@ export default function Builder() {
           console.log("Here is ", templateData);
           const updatedSteps = templateData.template.map((step) => ({
             ...step,
-            status: StepStatus.PENDING,
+            status: StepStatus.COMPLETED,
             type: step.type as StepType,
           }));
           setStepSets([[...updatedSteps]]);
@@ -60,6 +60,11 @@ export default function Builder() {
     fetchData();
   }, []);
 
+  function onFileClick(file: FileNode){
+    setActiveView('editor');
+    setSelectedFile(file)
+  }
+
   const addNewSteps = (newSteps: Step[]) => {
     setStepSets((prevSets) => [...prevSets, newSteps]);
     setFileNode((currentFiles) => applyStepsToCodebase(currentFiles, newSteps));
@@ -68,7 +73,7 @@ export default function Builder() {
   return (
     <div className="h-screen">
       <Navbar template={stepSets[stepSets.length - 1] || []} />
-      <div className="h-screen bg-gray-100 flex">
+      <div className="h-[92%] bg-gray-100 flex">
         <Sidebar
           isExpanded={isExpanded}
           onToggle={() => setIsExpanded(!isExpanded)}
@@ -77,19 +82,19 @@ export default function Builder() {
         />
         {/* Main Content */}
         <div className="flex-1">
-          <div className="flex flex-col h-screen">
+          <div className="flex flex-col h-full ">
             {currentPage === "code-editor" ? (
               <div className="flex-1 bg-gradient-to-r from-slate-950 to-slate-900 transition-all duration-200 animate-in fade-in text-white flex overflow-hidden">
-                <div className="h-screen flex flex-col w-[40%]">
-                  <div className="flex h-[70%] overflow-hidden">
+                <div className="flex-1 flex flex-col space-between w-[40%]">
+                  <div className="flex h-[80%] overflow-hidden w-full">
                     <ProgressSteps stepSets={stepSets} />
                     <FileExplorer
                       FileNode={fileNode}
-                      onFileSelect={setSelectedFile}
+                      onFileSelect={onFileClick}
                       selectedFile={selectedFile}
                     />
                   </div>
-                  <div className="h-24 mt-2 pb-4 pt-2">
+                  <div className="h-[20%]">
                     <PromptField 
                       fileNode={fileNode} 
                       onNewSteps={(steps) => {
@@ -98,7 +103,7 @@ export default function Builder() {
                     />
                   </div>
                 </div>
-                <div className="flex-1 h-full overflow-hidden">
+                <div className="flex-1  overflow-hidden">
                   <div className="p-2">
                     <div className="flex justify-between items-center">
                       <CapsuleToggle
@@ -112,8 +117,8 @@ export default function Builder() {
                       </p>
                     </div>
                   </div>
-                  <div className="h-[calc(100%-3rem)] overflow-hidden">
-                    <div className="text-xl text-gray-800 h-full">
+                  <div className="flex-1 flex flex-col h-full overflow-hidden">
+                    <div className="flex-1 text-xl text-gray-800 ">
                       {activeView === "editor" ? (
                         <CodeEditor selectedFile={selectedFile} />
                       ) : (
