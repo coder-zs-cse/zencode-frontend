@@ -93,7 +93,7 @@ This project was brought to life by: Goemkars
 
 [Niranjan Hebli](https://github.com/NiranjanHebli)
 
-[Bryson Gracias](https://github.com/)
+[Bryson Gracias](https://github.com/MrGladiator14)
 
 ---
 
