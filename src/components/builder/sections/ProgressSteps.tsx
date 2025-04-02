@@ -142,7 +142,6 @@ const ProgressSteps = function ({ stepSets }: ProgressStepsProps) {
                             {getStatusIcon(step.status)}
                           </div>
                         </div>
-                        <StepContent step={step} />
                       </div>
                     </div>
                   )}

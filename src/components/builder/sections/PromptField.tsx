@@ -161,14 +161,7 @@ const PromptField = function ({ fileNode, onNewSteps }: PromptFieldProps) {
       </form>
 
       <div className="flex bg-slate-900 justify-end p-2 rounded-b-2xl">
-        <button
-          type="button"
-          onClick={handleSubmit}
-          disabled={isLoading}
-          className="bg-blue-500 hover:bg-blue-600 disabled:bg-blue-400 px-2 py-2 m-2 rounded-lg transition-colors duration-200 text-white"
-        >
-          {isLoading ? <Loader size="sm" /> : <SendHorizontal size={20} />}
-        </button>
+        
         <button
           onClick={() => setIsOpen(!isOpen)}
           className="bg-blue-500 hover:bg-blue-600 px-2 py-2 m-2 rounded-lg transition-colors duration-200 text-white"
@@ -177,6 +170,14 @@ const PromptField = function ({ fileNode, onNewSteps }: PromptFieldProps) {
           }
         >
           {isOpen ? <X size={20} /> : <Plus size={20} />}
+        </button>
+        <button
+          type="button"
+          onClick={handleSubmit}
+          disabled={isLoading}
+          className="bg-blue-500 hover:bg-blue-600 disabled:bg-blue-400 px-2 py-2 m-2 rounded-lg transition-colors duration-200 text-white"
+        >
+          {isLoading ? <Loader size="sm" /> : <SendHorizontal size={20} />}
         </button>
       </div>
     </div>
