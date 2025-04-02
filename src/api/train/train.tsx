@@ -8,7 +8,7 @@ export const training_endpoint = async (
 ): Promise<trainingAPIResponse> => {
   try {
     const response = await axiosSecure.post(
-      `${envConfig.DB_URL}/train/github`,
+      `${envConfig.BASE_URL}/train/github`,
       request
     );
     console.log("train endpoint", response);
