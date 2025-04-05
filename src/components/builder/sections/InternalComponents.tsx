@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { ComponentCard } from "@/components/ui/card-component/card-component";
 import { ComponentDetail } from "@/components/ui/details-component/details-component";
 import { find_components_endpoint } from "@/api/library/library";
+import { Search } from "lucide-react";
 
 export interface Component {
   componentName: string;
@@ -14,158 +15,10 @@ export interface Component {
   importPath: string;
 }
 
-const components: Component[] = [
-  {
-    componentName: "Button",
-    indexingStatus: true,
-    componentPath: "/src/components/Button",
-    description:
-      "A versatile button component with multiple variants and sizes",
-    useCase: "Used for triggering actions or submitting forms",
-    codeSamples: [
-      '<Button variant="primary">Click me</Button>',
-      '<Button variant="secondary" size="sm">Small Button</Button>',
-    ],
-    dependencies: ["react", "tailwindcss"],
-    importPath: "@/components/Button",
-  },
-  {
-    componentName: "Card",
-    indexingStatus: true,
-    componentPath: "/src/components/Card",
-    description:
-      "A flexible card component for displaying content in a contained format",
-    useCase: "Displaying grouped information in a visually appealing way",
-    codeSamples: ['<Card title="Example">Content goes here</Card>'],
-    dependencies: ["react", "tailwindcss"],
-    importPath: "@/components/Card",
-  },
-  {
-    componentName: "Input",
-    indexingStatus: false,
-    componentPath: "/src/components/Input",
-    description:
-      "An input component with built-in validation and error handling",
-    useCase: "Form inputs with validation support",
-    codeSamples: ['<Input type="text" placeholder="Enter your name" />'],
-    dependencies: ["react", "tailwindcss"],
-    importPath: "@/components/Input",
-  },
-  {
-    componentName: "Modal",
-    indexingStatus: true,
-    componentPath: "/src/components/Modal",
-    description: "A modal dialog component with backdrop and animation",
-    useCase: "Displaying important information or confirmations",
-    codeSamples: [
-      "<Modal isOpen={true} onClose={() => {}}>Modal content</Modal>",
-    ],
-    dependencies: ["react", "tailwindcss"],
-    importPath: "@/components/Modal",
-  },
-  {
-    componentName: "Button",
-    indexingStatus: true,
-    componentPath: "/src/components/Button",
-    description:
-      "A versatile button component with multiple variants and sizes",
-    useCase: "Used for triggering actions or submitting forms",
-    codeSamples: [
-      '<Button variant="primary">Click me</Button>',
-      '<Button variant="secondary" size="sm">Small Button</Button>',
-    ],
-    dependencies: ["react", "tailwindcss"],
-    importPath: "@/components/Button",
-  },
-  {
-    componentName: "Card",
-    indexingStatus: true,
-    componentPath: "/src/components/Card",
-    description:
-      "A flexible card component for displaying content in a contained format",
-    useCase: "Displaying grouped information in a visually appealing way",
-    codeSamples: ['<Card title="Example">Content goes here</Card>'],
-    dependencies: ["react", "tailwindcss"],
-    importPath: "@/components/Card",
-  },
-  {
-    componentName: "Input",
-    indexingStatus: false,
-    componentPath: "/src/components/Input",
-    description:
-      "An input component with built-in validation and error handling",
-    useCase: "Form inputs with validation support",
-    codeSamples: ['<Input type="text" placeholder="Enter your name" />'],
-    dependencies: ["react", "tailwindcss"],
-    importPath: "@/components/Input",
-  },
-  {
-    componentName: "Modal",
-    indexingStatus: true,
-    componentPath: "/src/components/Modal",
-    description: "A modal dialog component with backdrop and animation",
-    useCase: "Displaying important information or confirmations",
-    codeSamples: [
-      "<Modal isOpen={true} onClose={() => {}}>Modal content</Modal>",
-    ],
-    dependencies: ["react", "tailwindcss"],
-    importPath: "@/components/Modal",
-  },
-  {
-    componentName: "Button",
-    indexingStatus: true,
-    componentPath: "/src/components/Button",
-    description:
-      "A versatile button component with multiple variants and sizes",
-    useCase: "Used for triggering actions or submitting forms",
-    codeSamples: [
-      '<Button variant="primary">Click me</Button>',
-      '<Button variant="secondary" size="sm">Small Button</Button>',
-    ],
-    dependencies: ["react", "tailwindcss"],
-    importPath: "@/components/Button",
-  },
-  {
-    componentName: "Card",
-    indexingStatus: true,
-    componentPath: "/src/components/Card",
-    description:
-      "A flexible card component for displaying content in a contained format",
-    useCase: "Displaying grouped information in a visually appealing way",
-    codeSamples: ['<Card title="Example">Content goes here</Card>'],
-    dependencies: ["react", "tailwindcss"],
-    importPath: "@/components/Card",
-  },
-  {
-    componentName: "Input",
-    indexingStatus: false,
-    componentPath: "/src/components/Input",
-    description:
-      "An input component with built-in validation and error handling",
-    useCase: "Form inputs with validation support",
-    codeSamples: ['<Input type="text" placeholder="Enter your name" />'],
-    dependencies: ["react", "tailwindcss"],
-    importPath: "@/components/Input",
-  },
-  {
-    componentName: "Modal",
-    indexingStatus: true,
-    componentPath: "/src/components/Modal",
-    description: "A modal dialog component with backdrop and animation",
-    useCase: "Displaying important information or confirmations",
-    codeSamples: [
-      "<Modal isOpen={true} onClose={() => {}}>Modal content</Modal>",
-    ],
-    dependencies: ["react", "tailwindcss"],
-    importPath: "@/components/Modal",
-  },
-];
-
 export function InternalComponents() {
-  const [selectedComponent, setSelectedComponent] = useState<Component | null>(
-    null
-  );
+  const [selectedComponent, setSelectedComponent] = useState<Component | null>(null);
   const [componentList, setComponentList] = useState<Component[]>([]);
+  const [searchQuery, setSearchQuery] = useState("");
 
   async function fetchData() {
     try {
@@ -175,16 +28,35 @@ export function InternalComponents() {
       console.log("error in fetching internal components", error);
     }
   }
+
   useEffect(() => {
     fetchData();
   }, []);
 
+  const filteredComponents = componentList.filter((component) =>
+    component.componentName.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   return (
-    <div className="p-8 bg-slate-900 h-screen overflow-y-auto scrollable-content">
-      <h1 className="text-2xl font-semibold text-white mb-6">Library</h1>
+    <div className="p-8 bg-slate-900 min-h-screen overflow-y-auto scrollable-content">
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-2xl font-semibold text-white">Library</h1>
+
+      </div>
+      <div className="relative flex justify-center pb-4">
+          <input
+            type="text"
+            placeholder="Search component"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="w-[85%] pl-10 pr-8 py-2 rounded-lg bg-slate-800 text-white border border-slate-700 focus:outline-none focus:border-blue-500"
+          />
+      <Search className="absolute left-36  top-1/3 transform -translate-y-1/2 text-slate-400 w-4 h-4" />
+        </div>
+
       <div className="flex flex-wrap">
-        {componentList.length > 0 ? (
-          componentList.map((component) => (
+        {filteredComponents.length > 0 ? (
+          filteredComponents.map((component) => (
             <div key={component.componentName} className="w-1/4 p-2">
               <ComponentCard
                 key={component.componentName}
@@ -195,7 +67,9 @@ export function InternalComponents() {
           ))
         ) : (
           <div className="w-full text-center text-white py-8">
-            Please index your internal library
+            {componentList.length === 0
+              ? "Please index your internal library"
+              : "No components found matching your search"}
           </div>
         )}
       </div>
@@ -209,3 +83,5 @@ export function InternalComponents() {
     </div>
   );
 }
+
+export default InternalComponents;
