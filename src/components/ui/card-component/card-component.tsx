@@ -15,9 +15,10 @@ export interface Component {
 interface ComponentCardProps {
   component: Component;
   onClick: () => void;
+  onEdit: () => void;
 }
 
-export function ComponentCard({ component, onClick }: ComponentCardProps) {
+export function ComponentCard({ component, onClick, onEdit }: ComponentCardProps) {
   return (
     <div className=" bg-gradient-to-r from-slate-950 to-slate-900 border border-slate-800 rounded-xl shadow-lg p-6 hover:shadow-xl transition-all duration-200 animate-in fade-in">
       <div className="space-y-4">
@@ -47,14 +48,23 @@ export function ComponentCard({ component, onClick }: ComponentCardProps) {
             </p>
           </div>
         </div>
+<div className='flex'>
 
         <button
           onClick={onClick}
-          className="w-full mt-2 flex items-center justify-center gap-2 bg-slate-800 hover:bg-slate-700 text-slate-200 py-2.5 px-4 rounded-lg transition-colors duration-200 font-medium group"
-        >
+          className="w-1/2 mt-2 m-2 flex items-center justify-center gap-2 bg-slate-800 hover:bg-slate-700 text-slate-200 py-2.5 px-4 rounded-lg transition-colors duration-200 font-medium group"
+          >
           View Details
           <ChevronRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
         </button>
+        <button
+          onClick={onEdit}
+          className="w-1/2 mt-2 m-2 flex items-center justify-center gap-2 bg-blue-800 hover:bg-blue-700 text-slate-200 py-2.5 px-4 rounded-lg transition-colors duration-200 font-medium group"
+          >
+          Edit Details
+          <ChevronRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
+        </button>
+          </div>
       </div>
     </div>
   );
