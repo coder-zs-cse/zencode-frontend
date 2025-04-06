@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { template_endpoint } from "@/api";
-import { PROGRESS_STEPS } from "@/constants";
+
 import {
   CodeEditor,
   FileExplorer,
@@ -37,6 +37,7 @@ export default function Builder() {
   >("code-editor");
   const [activeView, setActiveView] = useState<"editor" | "preview">("editor");
   const webcontainerState = useWebContainer(fileNode);
+  const [showCheckboxes,setCheckboxes] = useState(false)
 
   useEffect(() => {
     const fetchData = async () => {
@@ -92,6 +93,7 @@ export default function Builder() {
                       FileNode={fileNode}
                       onFileSelect={onFileClick}
                       selectedFile={selectedFile}
+                      showCheckboxes = {showCheckboxes}
                     />
                   </div>
                   <div className="h-[20%]">
@@ -99,7 +101,9 @@ export default function Builder() {
                       fileNode={fileNode} 
                       onNewSteps={(steps) => {
                         addNewSteps(steps);
-                      }} 
+                      }}
+                      showCheckboxes = {showCheckboxes}
+                      setCheckboxes = {setCheckboxes}
                     />
                   </div>
                 </div>

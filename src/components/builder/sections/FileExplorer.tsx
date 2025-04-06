@@ -6,14 +6,17 @@ interface FileExplorerProps {
   FileNode: FileNode[];
   onFileSelect: (file: FileNode) => void;
   selectedFile: FileNode | null;
+  showCheckboxes: boolean;
 }
 
 const FileExplorer = function ({ 
   FileNode, 
   onFileSelect, 
-  selectedFile 
+  selectedFile,
+  showCheckboxes=true,
 }: FileExplorerProps) {
   const [expandedFolders, setExpandedFolders] = useState<Set<string>>(new Set(['/']));
+  const [selectedComponents, setSelectedComponents] = useState<string[]>([]);
 
   const toggleFolder = (path: string) => {
     setExpandedFolders(prev => {
@@ -25,6 +28,16 @@ const FileExplorer = function ({
       }
       return next;
     });
+  };
+
+  const toggleComponent = (id: string) => {
+    const newSelected = new Set(selectedComponents);
+    if (newSelected.has(id)) {
+      newSelected.delete(id);
+    } else {
+      newSelected.add(id);
+    }
+    setSelectedComponents(Array.from(newSelected));
   };
 
   const sortItems = (items: FileNode[]) => {
@@ -70,7 +83,15 @@ const FileExplorer = function ({
           }`}
           onClick={() => onFileSelect(item)}
         >
-          <FileCode size={16} className="text-blue-400" />
+           {showCheckboxes ? (
+            <input
+              type="checkbox"
+              className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+              onClick={()=>toggleComponent(item.path)}
+            />
+          ) : (
+            <FileCode size={16} className="text-blue-400" />
+          )}
           <span>{item.name}</span>
         </div>
       );
@@ -78,7 +99,7 @@ const FileExplorer = function ({
   };
 
   return (
-    <div className="w-64  border-x border-gray-700 overflow-y-auto w-[50%] scrollable-content">
+    <div className=" border-x border-gray-700 overflow-y-auto w-[50%] scrollable-content">
       <div className="p-4">
         <h2 className="text-xl font-bold mb-4">Files</h2>
         {renderFileTree(FileNode)}

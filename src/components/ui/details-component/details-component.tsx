@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import { X, CheckCircle, XCircle, Edit2, Save, Delete, Trash2 } from "lucide-react";
-
+import { X, CheckCircle, XCircle, Edit2, Save, Trash2 } from "lucide-react";
+import { update_component_endpoint } from "@/api";
 export interface Component {
   componentName: string;
   indexingStatus: boolean;
@@ -23,7 +23,6 @@ export function ComponentDetail({
   component,
   onClose,
   isEditingEnabled=false,
-  onUpdate
 }: ComponentDetailProps) {
   const [isEditing, setIsEditing] = useState(isEditingEnabled);
   const [editedComponent, setEditedComponent] = useState<Component>(component);
@@ -34,7 +33,7 @@ export function ComponentDetail({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onUpdate?.(editedComponent);
+    update_component_endpoint(editedComponent)
     setIsEditing(false);
   };
 
@@ -65,15 +64,6 @@ export function ComponentDetail({
                 className="text-xl font-semibold text-slate-100 bg-transparent border-b border-slate-700 focus:border-blue-500 outline-none"
               />
               <label className="flex items-center gap-2">
-                <input
-                  type="checkbox"
-                  checked={editedComponent.indexingStatus}
-                  onChange={(e) =>
-                    handleInputChange("indexingStatus", e.target.checked)
-                  }
-                  className="rounded border-slate-700"
-                />
-                <span className="text-slate-400 text-sm">Indexed</span>
               </label>
             </div>
             <div className="flex gap-4">
