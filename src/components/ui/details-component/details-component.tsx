@@ -144,7 +144,62 @@ const DependenciesSection: React.FC<{ dependencies: string[] }> = ({
   </div>
 );
 
-const EditForm: React.FC<{
+// Reusable Form Components
+interface FormFieldProps {
+  label: string;
+  value: string;
+  onChange: (value: string) => void;
+  type?: "text" | "textarea";
+  className?: string;
+}
+
+const FormField: React.FC<FormFieldProps> = ({
+  label,
+  value,
+  onChange,
+  type = "text",
+  className = "",
+}) => {
+  const commonClasses =
+    "w-full bg-slate-800/50 p-2 rounded-lg border border-slate-700 text-slate-300 focus:border-blue-500 outline-none";
+  const textareaClasses = "min-h-[100px]";
+
+  return (
+    <div className="space-y-2">
+      <label className="text-sm font-medium text-slate-400 uppercase tracking-wider">
+        {label}
+      </label>
+      {type === "textarea" ? (
+        <textarea
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          className={`${commonClasses} ${textareaClasses} ${className}`}
+        />
+      ) : (
+        <input
+          type="text"
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          className={`${commonClasses} ${className}`}
+        />
+      )}
+    </div>
+  );
+};
+
+interface FormSectionProps {
+  title: string;
+  children: React.ReactNode;
+}
+
+const FormSection: React.FC<FormSectionProps> = ({ title, children }) => (
+  <div className="space-y-6">
+    <h3 className="text-lg font-semibold text-slate-200">{title}</h3>
+    {children}
+  </div>
+);
+
+export const EditForm: React.FC<{
   component: Component;
   onSave: (component: Component) => void;
   onCancel: () => void;
@@ -169,72 +224,59 @@ const EditForm: React.FC<{
   };
 
   return (
-    <form onSubmit={handleSubmit} className="p-6 space-y-6">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div className="space-y-2">
-          <label className="text-sm font-medium text-slate-400 uppercase tracking-wider">
-            Component Path
-          </label>
-          <input
-            type="text"
+    <form onSubmit={handleSubmit} className="p-6 space-y-8">
+      <FormSection title="Basic Information">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <FormField
+            label="Component Name"
+            value={editedComponent.componentName}
+            onChange={(value) => handleInputChange("componentName", value)}
+          />
+          <FormField
+            label="Component Path"
             value={editedComponent.componentPath}
-            onChange={(e) => handleInputChange("componentPath", e.target.value)}
-            className="w-full bg-slate-800/50 p-2 rounded-lg border border-slate-700 text-slate-300 focus:border-blue-500 outline-none"
+            onChange={(value) => handleInputChange("componentPath", value)}
           />
-        </div>
-
-        <div className="space-y-2">
-          <label className="text-sm font-medium text-slate-400 uppercase tracking-wider">
-            Import Path
-          </label>
-          <input
-            type="text"
+          <FormField
+            label="Import Path"
             value={editedComponent.importPath}
-            onChange={(e) => handleInputChange("importPath", e.target.value)}
-            className="w-full bg-slate-800/50 p-2 rounded-lg border border-slate-700 text-slate-300 focus:border-blue-500 outline-none"
+            onChange={(value) => handleInputChange("importPath", value)}
           />
         </div>
-      </div>
+      </FormSection>
 
-      <InfoSection
-        label="Description"
-        value={editedComponent.description}
-        isError={!editedComponent.description}
-      />
+      <FormSection title="Documentation">
+        <FormField
+          label="Description"
+          value={editedComponent.description}
+          onChange={(value) => handleInputChange("description", value)}
+          type="textarea"
+        />
+        <FormField
+          label="Use Case"
+          value={editedComponent.useCase}
+          onChange={(value) => handleInputChange("useCase", value)}
+          type="textarea"
+        />
+      </FormSection>
 
-      <InfoSection
-        label="Use Case"
-        value={editedComponent.useCase}
-        isError={!editedComponent.useCase}
-      />
-
-      <div className="space-y-2">
-        <label className="text-sm font-medium text-slate-400 uppercase tracking-wider">
-          Code Samples (one per line)
-        </label>
-        <textarea
+      <FormSection title="Technical Details">
+        <FormField
+          label="Code Samples (one per line)"
           value={editedComponent.codeSamples.join("\n")}
-          onChange={(e) =>
-            handleArrayInputChange("codeSamples", e.target.value)
-          }
-          className="w-full bg-slate-800/50 p-2 rounded-lg border border-slate-700 text-slate-300 focus:border-blue-500 outline-none min-h-[150px] font-mono"
+          onChange={(value) => handleArrayInputChange("codeSamples", value)}
+          type="textarea"
+          className="font-mono"
         />
-      </div>
-
-      <div className="space-y-2">
-        <label className="text-sm font-medium text-slate-400 uppercase tracking-wider">
-          Dependencies (one per line)
-        </label>
-        <textarea
+        <FormField
+          label="Dependencies (one per line)"
           value={editedComponent.dependencies.join("\n")}
-          onChange={(e) =>
-            handleArrayInputChange("dependencies", e.target.value)
-          }
-          className="w-full bg-slate-800/50 p-2 rounded-lg border border-slate-700 text-slate-300 focus:border-blue-500 outline-none min-h-[100px]"
+          onChange={(value) => handleArrayInputChange("dependencies", value)}
+          type="textarea"
         />
-      </div>
+      </FormSection>
 
-      <div className="flex justify-end gap-4">
+      <div className="flex justify-end gap-4 pt-4 border-t border-slate-800">
         <button
           type="button"
           onClick={onCancel}

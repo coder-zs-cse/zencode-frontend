@@ -8,8 +8,6 @@ import {
   FileX,
   Folder,
   Loader2,
-  MessageSquare,
-  Terminal,
 } from "lucide-react";
 import { Step } from "@/types";
 import { StepType } from "../../../types/steps";
@@ -67,24 +65,6 @@ const ProgressSteps = function ({ stepSets }: ProgressStepsProps) {
         return <Component className={iconClass} />;
       default:
         // return <MessageSquare className={iconClass} />;
-    }
-  };
-
-  const StepContent = ({ step }: { step: Step }) => {
-    const statusColor = getStatusColor(step.status);
-    if (step.description == "") {
-      return null;
-    }
-    switch (step.type) {
-
-      case StepType.TextDisplay:
-        return <p className="mt-2 text-gray-400">{step.description}</p>;
-      default:
-        return (
-          <div className={`mt-2 p-3 rounded-lg border ${statusColor}`}>
-            {step.description}
-          </div>
-        );
     }
   };
 

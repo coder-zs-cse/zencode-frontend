@@ -30,6 +30,7 @@ export default function Builder() {
   const [isExpanded, setIsExpanded] = useState(false);
   const query = searchParams.get("query");
   const [selectedFile, setSelectedFile] = useState<FileNode | null>(null);
+  const [selectedFiles, setSelectedFiles] = useState<string[]>([]);
   const [fileNode, setFileNode] = useState<FileNode[]>([]);
   const [stepSets, setStepSets] = useState<Step[][]>([]);
   const [currentPage, setCurrentPage] = useState<
@@ -37,7 +38,7 @@ export default function Builder() {
   >("code-editor");
   const [activeView, setActiveView] = useState<"editor" | "preview">("editor");
   const webcontainerState = useWebContainer(fileNode);
-  const [showCheckboxes, setCheckboxes] = useState(false);
+  const [showCheckboxes, setShowCheckboxes] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -94,6 +95,8 @@ export default function Builder() {
                       onFileSelect={onFileClick}
                       selectedFile={selectedFile}
                       showCheckboxes={showCheckboxes}
+                      selectedFiles={selectedFiles}
+                      setSelectedFiles={setSelectedFiles}
                     />
                   </div>
                   <div className="h-[20%]">
@@ -103,7 +106,8 @@ export default function Builder() {
                         addNewSteps(steps);
                       }}
                       showCheckboxes={showCheckboxes}
-                      setCheckboxes={setCheckboxes}
+                      setCheckboxes={setShowCheckboxes}
+                      selectedFiles={selectedFiles}
                     />
                   </div>
                 </div>
