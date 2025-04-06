@@ -15,14 +15,15 @@ const indexingValues = {
   IN_PROGRESS: "IN_PROGRESS",
   NOT_STARTED: "NOT_STARTED",
   COMPLETED: "COMPLETED",
+  ERROR: "ERROR"
 };
 function IndexingIndicator(userResponse : {indexingStatus:string | undefined}) {
   return (
     <div className="flex items-center gap-2">
       {userResponse.indexingStatus === indexingValues.NOT_STARTED ? (
         <>
-          <div className="w-2 h-2 rounded-full bg-blue-800"></div>
-          <span className="text-sm text-blue-800">Indexing not started</span>
+          <div className="w-2 h-2 rounded-full bg-white"></div>
+          <span className="text-sm text-white">Indexing not started</span>
         </>
       ) : userResponse.indexingStatus == indexingValues.IN_PROGRESS ? (
         <>
@@ -34,6 +35,11 @@ function IndexingIndicator(userResponse : {indexingStatus:string | undefined}) {
           <div className="w-2 h-2 rounded-full bg-green-400"></div>
           <span className="text-sm text-green-400">Indexing completed</span>
         </>
+      ) : userResponse.indexingStatus == indexingValues.ERROR ? (
+        <>
+          <div className="w-2 h-2 rounded-full bg-red-400"></div>
+          <span className="text-sm text-red-400">Indexing error</span>
+        </>
       ) : (
         ""
       )}
@@ -42,30 +48,30 @@ function IndexingIndicator(userResponse : {indexingStatus:string | undefined}) {
 }
 
 export function Navbar({ template }: NavbarProps) {
-  const [userResponse, setUserData] = useState<userAPIResponse | null>(null);
+  const [githubData, setGithubData] = useState<userAPIResponse | null>(null);
   const [successPopup, setSuccessPopup] = useState(false);
 
-  const fetchData = async () => {
+  const fetchGithubData = async () => {
     try {
-      const userData = await find_user_endpoint();
-      if (userData) {
-        setUserData(userData);
-        console.log("User Details", userData);
+      const repoData = await find_user_endpoint();
+      if (repoData) {
+        setGithubData(repoData);
+        console.log("GitHub Repository Details:", repoData);
       }
     } catch (error) {
-      console.error("Error calling endpoints:", error);
+      console.error("Error fetching GitHub data:", error);
     }
   };
 
   useEffect(() => {
-    // Initial fetch
-    fetchData();
+    // Initial fetch of GitHub repository data
+    fetchGithubData();
 
     let interval: NodeJS.Timeout | null = null;
 
-    // Only set up interval if status is IN_PROGRESS
-    if (userResponse?.indexingStatus === indexingValues.IN_PROGRESS) {
-      interval = setInterval(fetchData, 10000);
+    // Only set up interval if indexing is IN_PROGRESS
+    if (githubData?.indexingStatus === indexingValues.IN_PROGRESS || githubData?.indexingStatus === indexingValues.NOT_STARTED) {
+      interval = setInterval(fetchGithubData, 10000);
     }
 
     return () => {
@@ -73,7 +79,7 @@ export function Navbar({ template }: NavbarProps) {
         clearInterval(interval);
       }
     };
-  }, [userResponse?.indexingStatus]); // Dependency on indexingStatus
+  }, [githubData?.indexingStatus]); // Dependency on indexingStatus
 
   const handleExport = async () => {
     const status = await exportToZip({ template });
@@ -90,7 +96,7 @@ export function Navbar({ template }: NavbarProps) {
               </span>
             </div>
             <div className="flex items-center space-x-4">
-              <IndexingIndicator indexingStatus = {userResponse?.indexingStatus}/>
+              <IndexingIndicator indexingStatus={githubData?.indexingStatus}/>
               <button
                 className="flex items-center px-4 py-2 text-sm font-medium text-white bg-[#1E3A5F] rounded-md hover:bg-[#2A4A7F] transition-colors gap-2"
                 title="Export"
