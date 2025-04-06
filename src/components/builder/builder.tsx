@@ -37,7 +37,7 @@ export default function Builder() {
   >("code-editor");
   const [activeView, setActiveView] = useState<"editor" | "preview">("editor");
   const webcontainerState = useWebContainer(fileNode);
-  const [showCheckboxes,setCheckboxes] = useState(false)
+  const [showCheckboxes, setCheckboxes] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -61,9 +61,9 @@ export default function Builder() {
     fetchData();
   }, []);
 
-  function onFileClick(file: FileNode){
-    setActiveView('editor');
-    setSelectedFile(file)
+  function onFileClick(file: FileNode) {
+    setActiveView("editor");
+    setSelectedFile(file);
   }
 
   const addNewSteps = (newSteps: Step[]) => {
@@ -93,17 +93,17 @@ export default function Builder() {
                       FileNode={fileNode}
                       onFileSelect={onFileClick}
                       selectedFile={selectedFile}
-                      showCheckboxes = {showCheckboxes}
+                      showCheckboxes={showCheckboxes}
                     />
                   </div>
                   <div className="h-[20%]">
-                    <PromptField 
-                      fileNode={fileNode} 
+                    <PromptField
+                      fileNode={fileNode}
                       onNewSteps={(steps) => {
                         addNewSteps(steps);
                       }}
-                      showCheckboxes = {showCheckboxes}
-                      setCheckboxes = {setCheckboxes}
+                      showCheckboxes={showCheckboxes}
+                      setCheckboxes={setCheckboxes}
                     />
                   </div>
                 </div>

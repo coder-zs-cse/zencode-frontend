@@ -1,6 +1,4 @@
-import { StepType } from '@/types/steps';
 import { Step } from '@/types/steps';
-import { StepStatus} from "@/types";
 
 
 export const PROGRESS_STEPS: Step[] = [
