@@ -39,6 +39,9 @@ export default function Builder() {
   const [activeView, setActiveView] = useState<"editor" | "preview">("editor");
   const webcontainerState = useWebContainer(fileNode);
   const [showCheckboxes, setShowCheckboxes] = useState(false);
+  const [visibleSteps, setVisibleSteps] = useState<{ [key: string]: boolean }>(
+    {}
+  );
 
   useEffect(() => {
     const fetchData = async () => {
@@ -72,6 +75,36 @@ export default function Builder() {
     setFileNode((currentFiles) => applyStepsToCodebase(currentFiles, newSteps));
   };
 
+  // Function to filter file nodes based on visible steps
+  const getFilteredFileNodes = (nodes: FileNode[]): FileNode[] => {
+    return nodes
+      .map((node) => {
+        if (node.type === "folder") {
+          const filteredChildren = node.children
+            ? getFilteredFileNodes(node.children)
+            : [];
+          return {
+            ...node,
+            children:
+              filteredChildren.length > 0 ? filteredChildren : undefined,
+          };
+        }
+        return node;
+      })
+      .filter((node) => {
+        if (node.type === "folder") {
+          return node.children && node.children.length > 0;
+        }
+        // For files, check if they correspond to any visible step
+        return Object.entries(visibleSteps).some(([key, isVisible]) => {
+          if (!isVisible) return false;
+          const [setIndex, stepIndex] = key.split("-").map(Number);
+          const step = stepSets[setIndex]?.[stepIndex];
+          return step?.path === node.path;
+        });
+      });
+  };
+
   return (
     <div className="h-screen">
       <Navbar template={stepSets[stepSets.length - 1] || []} />
@@ -89,9 +122,12 @@ export default function Builder() {
               <div className="flex-1 bg-gradient-to-r from-slate-950 to-slate-900 transition-all duration-200 animate-in fade-in text-white flex overflow-hidden">
                 <div className="flex-1 flex flex-col space-between w-[40%]">
                   <div className="flex h-[80%] overflow-hidden w-full">
-                    <ProgressSteps stepSets={stepSets} />
+                    <ProgressSteps
+                      stepSets={stepSets}
+                      onVisibleStepsChange={setVisibleSteps}
+                    />
                     <FileExplorer
-                      FileNode={fileNode}
+                      FileNode={getFilteredFileNodes(fileNode)}
                       onFileSelect={onFileClick}
                       selectedFile={selectedFile}
                       showCheckboxes={showCheckboxes}

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   ChevronRight,
   ChevronDown,
@@ -61,8 +61,39 @@ const FileExplorer = function ({
   setSelectedFiles,
 }: FileExplorerProps) {
   const [expandedFolders, setExpandedFolders] = useState<Set<string>>(
-    new Set(["/"])
+    new Set()
   );
+
+  // Function to find all parent folders of visible files
+  const findParentFolders = (nodes: FileNode[]): Set<string> => {
+    const parentFolders = new Set<string>();
+
+    const traverse = (node: FileNode, currentPath: string = "") => {
+      const path = currentPath ? `${currentPath}/${node.name}` : node.name;
+
+      if (node.type === "folder" && node.children) {
+        const hasVisibleChildren = node.children.some((child) => {
+          if (child.type === "file") return true;
+          return traverse(child, path);
+        });
+
+        if (hasVisibleChildren) {
+          parentFolders.add(path);
+        }
+        return hasVisibleChildren;
+      }
+      return node.type === "file";
+    };
+
+    nodes.forEach((node) => traverse(node));
+    return parentFolders;
+  };
+
+  useEffect(() => {
+    // Update expanded folders whenever FileNode changes
+    const parentFolders = findParentFolders(FileNode);
+    setExpandedFolders(parentFolders);
+  }, [FileNode]);
 
   const toggleFolder = (path: string) => {
     setExpandedFolders((prev) => {
