@@ -32,6 +32,7 @@ export interface generateAPIResponse {
     generated_code: ReactResponse
     conversation: ChatMessage[],
     context: ContextBody,
+    session_id: string
 }
 
 export interface trainingAPIResponse {

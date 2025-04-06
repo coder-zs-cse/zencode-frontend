@@ -4,6 +4,7 @@ export interface generateAPIRequest {
   codebase: FileNode[];
   forcedComponents: string[];
   enableAISelection: boolean;
+  session_id: string | null;
 }
 
 export interface trainingAPIRequest {
