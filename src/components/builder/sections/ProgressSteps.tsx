@@ -26,11 +26,13 @@ export interface StepObject {
 interface ProgressStepsProps {
   stepSets: Step[][];
   onVisibleStepsChange?: (visibleSteps: { [key: string]: boolean }) => void;
+  isLoading?: boolean;
 }
 
 const ProgressSteps = function ({
   stepSets,
   onVisibleStepsChange,
+  isLoading = false,
 }: ProgressStepsProps) {
   const [loadingSteps, setLoadingSteps] = useState<{ [key: string]: boolean }>(
     {}
@@ -40,42 +42,45 @@ const ProgressSteps = function ({
   );
 
   useEffect(() => {
-    // Reset visibility when stepSets change
-    setVisibleSteps({});
+    if (isLoading) {
+      // Reset visibility when loading starts
+      setVisibleSteps({});
+      setLoadingSteps({});
+    } else {
+      // Show steps sequentially when loading is complete
+      let currentIndex = 0;
+      const totalSteps = stepSets.reduce((acc, steps) => acc + steps.length, 0);
 
-    // Show steps sequentially
-    let currentIndex = 0;
-    const totalSteps = stepSets.reduce((acc, steps) => acc + steps.length, 0);
+      const showNextStep = () => {
+        if (currentIndex >= totalSteps) return;
 
-    const showNextStep = () => {
-      if (currentIndex >= totalSteps) return;
+        let stepCount = 0;
+        stepSets.forEach((steps, setIndex) => {
+          steps.forEach((step, index) => {
+            if (stepCount === currentIndex) {
+              const stepKey = `${setIndex}-${index}`;
+              setVisibleSteps((prev) => {
+                const newVisibleSteps = { ...prev, [stepKey]: true };
+                onVisibleStepsChange?.(newVisibleSteps);
+                return newVisibleSteps;
+              });
+              setLoadingSteps((prev) => ({ ...prev, [stepKey]: true }));
 
-      let stepCount = 0;
-      stepSets.forEach((steps, setIndex) => {
-        steps.forEach((step, index) => {
-          if (stepCount === currentIndex) {
-            const stepKey = `${setIndex}-${index}`;
-            setVisibleSteps((prev) => {
-              const newVisibleSteps = { ...prev, [stepKey]: true };
-              onVisibleStepsChange?.(newVisibleSteps);
-              return newVisibleSteps;
-            });
-            setLoadingSteps((prev) => ({ ...prev, [stepKey]: true }));
-
-            setTimeout(() => {
-              setLoadingSteps((prev) => ({ ...prev, [stepKey]: false }));
-            }, 1000);
-          }
-          stepCount++;
+              setTimeout(() => {
+                setLoadingSteps((prev) => ({ ...prev, [stepKey]: false }));
+              }, 1000);
+            }
+            stepCount++;
+          });
         });
-      });
 
-      currentIndex++;
-      setTimeout(showNextStep, 1000);
-    };
+        currentIndex++;
+        setTimeout(showNextStep, 1000);
+      };
 
-    showNextStep();
-  }, [stepSets, onVisibleStepsChange]);
+      showNextStep();
+    }
+  }, [stepSets, onVisibleStepsChange, isLoading]);
 
   const getStatusIcon = (
     status: StepStatus = StepStatus.PENDING,

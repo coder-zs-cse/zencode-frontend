@@ -42,10 +42,12 @@ export default function Builder() {
   const [visibleSteps, setVisibleSteps] = useState<{ [key: string]: boolean }>(
     {}
   );
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
+        setIsLoading(true);
         const templateData: templateAPIResponse = await template_endpoint();
         if (templateData) {
           console.log("Here is ", templateData);
@@ -59,6 +61,8 @@ export default function Builder() {
         }
       } catch (error) {
         console.error("Error calling endpoints:", error);
+      } finally {
+        setIsLoading(false);
       }
     };
 
@@ -125,6 +129,7 @@ export default function Builder() {
                     <ProgressSteps
                       stepSets={stepSets}
                       onVisibleStepsChange={setVisibleSteps}
+                      isLoading={isLoading}
                     />
                     <FileExplorer
                       FileNode={getFilteredFileNodes(fileNode)}
@@ -133,6 +138,7 @@ export default function Builder() {
                       showCheckboxes={showCheckboxes}
                       selectedFiles={selectedFiles}
                       setSelectedFiles={setSelectedFiles}
+                      isLoading={isLoading}
                     />
                   </div>
                   <div className="h-[20%]">

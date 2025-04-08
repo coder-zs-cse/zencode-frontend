@@ -18,6 +18,7 @@ interface FileExplorerProps {
   showCheckboxes?: boolean;
   selectedFiles: string[];
   setSelectedFiles: React.Dispatch<React.SetStateAction<string[]>>;
+  isLoading?: boolean;
 }
 
 const getFileIcon = (fileName: string) => {
@@ -59,6 +60,7 @@ const FileExplorer = function ({
   showCheckboxes = true,
   selectedFiles,
   setSelectedFiles,
+  isLoading = false,
 }: FileExplorerProps) {
   const [expandedFolders, setExpandedFolders] = useState<Set<string>>(
     new Set()
@@ -90,10 +92,12 @@ const FileExplorer = function ({
   };
 
   useEffect(() => {
-    // Update expanded folders whenever FileNode changes
-    const parentFolders = findParentFolders(FileNode);
-    setExpandedFolders(parentFolders);
-  }, [FileNode]);
+    if (!isLoading) {
+      // Update expanded folders whenever FileNode changes and loading is complete
+      const parentFolders = findParentFolders(FileNode);
+      setExpandedFolders(parentFolders);
+    }
+  }, [FileNode, isLoading]);
 
   const toggleFolder = (path: string) => {
     setExpandedFolders((prev) => {
