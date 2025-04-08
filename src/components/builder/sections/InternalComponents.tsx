@@ -1,8 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { ComponentCard } from "@/components/ui/card-component/card-component";
-import { ComponentDetail } from "@/components/ui/details-component/details-component";
-import { find_components_endpoint } from "@/api/library/library";
-import { AlertCircle, Loader2, Search } from "lucide-react";
+import {
+  ComponentDetail,
+  EditForm,
+} from "@/components/ui/details-component/details-component";
+import {
+  find_components_endpoint,
+  insert_component_endpoint,
+} from "@/api/library/library";
+import { AlertCircle, Loader2, Search, X } from "lucide-react";
 
 export interface Component {
   componentName: string;
@@ -24,6 +30,17 @@ export function InternalComponents() {
   const [componentList, setComponentList] = useState<Component[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [isLoading, setIsLoading] = useState(true);
+  const [showAddComponent, setShowAddComponent] = useState(false);
+  const [newComponent, setNewComponent] = useState<Component>({
+    componentName: "",
+    indexingStatus: false,
+    componentPath: "",
+    description: "",
+    useCase: "",
+    codeSamples: [],
+    dependencies: [],
+    importPath: "",
+  });
 
   async function fetchData() {
     try {
@@ -45,11 +62,24 @@ export function InternalComponents() {
     component.componentName.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
+  const handleAddComponent = async (component: Component) => {
+    try {
+      await insert_component_endpoint(component);
+      setShowAddComponent(false);
+      fetchData(); // Refresh the component list
+    } catch (error) {
+      console.error("Error adding component:", error);
+    }
+  };
+
   return (
     <div className="p-8 bg-slate-900 min-h-full overflow-y-auto scrollable-content">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-semibold text-white">Library</h1>
-        <button className="flex items-center gap-2 text-sm font-medium text-white bg-blue-700 p-4 rounded-2xl hover:bg-blue-600">
+        <button
+          onClick={() => setShowAddComponent(true)}
+          className="flex items-center gap-2 text-sm font-medium text-white bg-blue-700 p-4 rounded-2xl hover:bg-blue-600"
+        >
           Add Component
         </button>
       </div>
@@ -98,6 +128,29 @@ export function InternalComponents() {
           </div>
         )}
       </div>
+
+      {showAddComponent && (
+        <div className="fixed inset-0 bg-slate-950/50 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-in fade-in duration-200">
+          <div className="bg-slate-900 rounded-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-2xl border border-slate-800">
+            <div className="flex justify-between items-center p-6 border-b border-slate-800">
+              <h2 className="text-xl font-semibold text-white">
+                Add New Component
+              </h2>
+              <button
+                onClick={() => setShowAddComponent(false)}
+                className="text-slate-400 hover:text-white"
+              >
+                <X size={24} />
+              </button>
+            </div>
+            <EditForm
+              component={newComponent}
+              onSave={handleAddComponent}
+              onCancel={() => setShowAddComponent(false)}
+            />
+          </div>
+        </div>
+      )}
 
       {selectedComponent && (
         <ComponentDetail

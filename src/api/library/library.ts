@@ -59,12 +59,33 @@ export const update_component_endpoint = async (component: Component) => {
                 importPath: component.importPath,
             }
         };
-        const request ={query,update}
-        const response = await axiosOpen.patch(`${envConfig.DB_URL}/components/update_one`,request);
+        const request = { query, update }
+        const response = await axiosOpen.patch(`${envConfig.DB_URL}/components/update_one`, request);
         console.log("update components endpoint", response);
     } catch (error) {
         console.error("Error fetching components data:", error);
         console.log("components endpoint:", error);
         throw error;
     }
-} 
+}
+
+export const insert_component_endpoint = async (component: Component) => {
+    try {
+        const userId = localStorage.getItem('userId');
+        if (userId === "") {
+            throw unauthorized;
+        }
+        const componentData = {
+            ...component,
+            userId: userId
+        };
+        const response = await axiosOpen.post(`${envConfig.DB_URL}/components`, componentData);
+        console.log("insert component endpoint", response);
+        return response.data;
+    } catch (error) {
+        console.error("Error inserting component:", error);
+        console.log("insert component endpoint:", error);
+        throw error;
+    }
+}
+

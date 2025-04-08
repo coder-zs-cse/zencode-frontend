@@ -21,6 +21,7 @@ interface PromptFieldProps {
   onNewSteps: (steps: Step[]) => void;
   showCheckboxes: boolean;
   setCheckboxes: (showCheckboxes: boolean) => void;
+  selectedFiles: string[];
 }
 
 const PromptField = function ({
@@ -28,6 +29,7 @@ const PromptField = function ({
   onNewSteps,
   showCheckboxes,
   setCheckboxes,
+  selectedFiles,
 }: PromptFieldProps) {
   const [prompt, setPrompt] = useState("");
   const [isOpen, setIsOpen] = useState(false);
@@ -94,6 +96,7 @@ const PromptField = function ({
         console.log("error in fetching forced components", error);
       }
     }
+    console.log(selectedFiles);
     fetchData();
   }, []);
 
