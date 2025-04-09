@@ -12,8 +12,7 @@ export const fetch_github_details = async () => {
         const query = {
             userId: userId
         };
-        const queryString = encodeURIComponent(JSON.stringify(query));
-        const response = await axiosOpen.get(`${envConfig.DB_URL}/github/findOne?query=${queryString}`);
+        const response = await axiosOpen.post(`${envConfig.DB_URL}/github/findOne`, {query});
         console.log("GitHub repository data:", response);
         if (response.data.success && response.data.data){
             return response.data.data;

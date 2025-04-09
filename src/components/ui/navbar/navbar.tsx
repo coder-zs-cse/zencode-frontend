@@ -1,14 +1,14 @@
 /* eslint-disable react/no-unescaped-entities */
 import React, { useEffect, useState } from "react";
 import { Share} from "lucide-react";
-import { Step } from "@/types";
+import { Step, FileNode } from "@/types";
 import { exportToZip } from "@/lib/utils/exportFolder";
 import { find_user_endpoint } from "@/api";
 import { userAPIResponse } from '../../../types/api-response';
 import { SuccessPopup } from "../success-popup/sucess-popup";
 
 interface NavbarProps {
-  template: Step[];
+  fileNode: FileNode[];
 }
 
 const indexingValues = {
@@ -47,7 +47,7 @@ function IndexingIndicator(userResponse : {indexingStatus:string | undefined}) {
   );
 }
 
-export function Navbar({ template }: NavbarProps) {
+export function Navbar({ fileNode }: NavbarProps) {
   const [githubData, setGithubData] = useState<userAPIResponse | null>(null);
   const [successPopup, setSuccessPopup] = useState(false);
 
@@ -82,7 +82,7 @@ export function Navbar({ template }: NavbarProps) {
   }, [githubData?.indexingStatus]); // Dependency on indexingStatus
 
   const handleExport = async () => {
-    const status = await exportToZip({ template });
+    const status = await exportToZip({ fileNode });
     setSuccessPopup(status);
     setTimeout(() => setSuccessPopup(false), 4000);
   };

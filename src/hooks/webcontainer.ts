@@ -90,7 +90,7 @@ export function useWebContainer(fileNode?: FileNode[]) {
 
             try {
                 // Mount new files
-                console.log('Mounting files...');
+                console.log('Mounting files..., fileNode:', fileNode);
                 setState(prev => ({ ...prev, status: "Mounting files..." }));
                 const mountStructure = createMountStructure(fileNode);
                 await state.container.mount(mountStructure);

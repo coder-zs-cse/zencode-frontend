@@ -72,7 +72,7 @@ export default function Builder() {
 
   return (
     <div className="h-screen">
-      <Navbar template={stepSets[stepSets.length - 1] || []} />
+      <Navbar fileNode={fileNode} />
       <div className="h-[92%] bg-gray-100 flex">
         <Sidebar
           isExpanded={isExpanded}

@@ -10,6 +10,7 @@ import { Loader } from "@/components/ui/loader/loader";
 
 let request: generateAPIRequest = {
   query_text: "",
+  session_id: "",
   conversation: [],
   codebase: [],
   forcedComponents: [],

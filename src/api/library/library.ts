@@ -12,8 +12,7 @@ export const find_components_endpoint = async (): Promise<Component[]> => {
         const query = {
             userId: userId
         };
-        const queryString = encodeURIComponent(JSON.stringify(query));
-        const response = await axiosOpen.get(`${envConfig.DB_URL}/components/find?query=${queryString}`);
+        const response = await axiosOpen.post(`${envConfig.DB_URL}/components/find`, {query});
         console.log("components endpoint", response);
         
         // Explicitly map the response data to ensure it matches the Component interface
