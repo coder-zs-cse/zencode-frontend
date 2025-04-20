@@ -9,7 +9,7 @@ import {
   insert_component_endpoint,
 } from "@/api/library/library";
 import { AlertCircle, Loader2, Search, X, Plus, List } from "lucide-react";
-import { find_user_endpoint } from "@/api/user/user";
+import { fetch_github_details } from "@/api/user/user";
 
 export interface Component {
   componentName: string;
@@ -34,13 +34,19 @@ interface ParsedPackageJson {
 const DependenciesList: React.FC<DependenciesListProps> = ({ packageJson }) => {
   if (!packageJson) {
     return (
-      <div className="w-full max-w-4xl mx-auto">
-        <div className="bg-slate-800 rounded-lg p-6">
-          <div className="text-center py-8">
-            <p className="text-slate-400">Loading dependencies...</p>
-          </div>
-        </div>
-      </div>
+      <div className="w-full flex justify-center py-8">
+                <div className="bg-slate-800 border border-slate-700 rounded-lg p-6 w-[60%]">
+                  <div className="flex items-center">
+                    <AlertCircle className="w-6 h-6 text-blue-500 mr-3" />
+                    <p className="text-white font-medium text-center">
+                      No dependencies to display
+                    </p>
+                  </div>
+                  <p className="text-slate-400 mt-2 text-sm pt-4">
+                    Please index your internal library to start managing your dependencies.
+                  </p>
+                </div>
+              </div>
     );
   }
 
@@ -142,10 +148,10 @@ export function InternalComponents() {
     try {
       setIsLoading(true);
       const components = await find_components_endpoint();
-      const userData = await find_user_endpoint();
-      console.log("userData", userData.data.packageJson);
+      const userData = await fetch_github_details();
+      console.log("userData", userData.packageJson);
       setComponentList(components);
-      setPackageJson(userData.data.packageJson);
+      setPackageJson(userData.packageJson);
     } catch (error) {
       console.log("error in fetching internal components", error);
     } finally {
@@ -238,10 +244,24 @@ export function InternalComponents() {
           </div>
 
           <div className="flex flex-wrap">
-            {isLoading || componentList.length === 0 ? (
+            {isLoading ? (
               <div className="w-full flex flex-col items-center justify-center py-16">
                 <Loader2 className="w-10 h-10 text-blue-500 animate-spin mb-4" />
                 <p className="text-slate-400">Loading components...</p>
+              </div>
+            ) : componentList.length === 0 ? (
+              <div className="w-full flex justify-center py-8">
+                <div className="bg-slate-800 border border-slate-700 rounded-lg p-6 w-[60%]">
+                  <div className="flex items-center">
+                    <AlertCircle className="w-6 h-6 text-blue-500 mr-3" />
+                    <p className="text-white font-medium text-center">
+                      No components to display
+                    </p>
+                  </div>
+                  <p className="text-slate-400 mt-2 text-sm pt-4">
+                    Please index your internal library to start managing your components.
+                  </p>
+                </div>
               </div>
             ) : filteredComponents.length > 0 ? (
               filteredComponents.map((component) => (

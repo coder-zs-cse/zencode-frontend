@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { Share} from "lucide-react";
 import { Step, FileNode } from "@/types";
 import { exportToZip } from "@/lib/utils/exportFolder";
-import { find_user_endpoint } from "@/api";
+import { fetch_github_details } from "@/api";
 import { userAPIResponse } from '../../../types/api-response';
 import { SuccessPopup } from "../success-popup/sucess-popup";
 
@@ -53,7 +53,7 @@ export function Navbar({ fileNode }: NavbarProps) {
 
   const fetchGithubData = async () => {
     try {
-      const repoData = await find_user_endpoint();
+      const repoData = await fetch_github_details();
       if (repoData) {
         setGithubData(repoData);
         console.log("GitHub Repository Details:", repoData);

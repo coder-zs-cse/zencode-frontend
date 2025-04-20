@@ -205,7 +205,7 @@ const FileExplorer = function ({
   };
 
   return (
-    <div className="h-full p-4 overflow-y-auto w-[50%]">
+    <div className="h-full p-4 overflow-y-auto w-[50%] scrollable-content">
       <h2 className="text-xl font-bold mb-4">File Explorer</h2>
       <div className="h-full overflow-y-auto p-2">
         {sortItems(FileNode).map((node) => renderFileNode(node))}

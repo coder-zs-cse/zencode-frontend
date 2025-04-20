@@ -42,11 +42,10 @@ const ProgressSteps = function ({
   );
 
   useEffect(() => {
-    if (isLoading) {
-      // Reset visibility when loading starts
-      setVisibleSteps({});
-      setLoadingSteps({});
-    } else {
+    // Don't reset visibility when loading starts
+    // Only handle new steps that are added or appended
+    
+    if (!isLoading) {
       // Show steps sequentially when loading is complete
       let currentIndex = 0;
       const totalSteps = stepSets.reduce((acc, steps) => acc + steps.length, 0);
@@ -59,16 +58,20 @@ const ProgressSteps = function ({
           steps.forEach((step, index) => {
             if (stepCount === currentIndex) {
               const stepKey = `${setIndex}-${index}`;
-              setVisibleSteps((prev) => {
-                const newVisibleSteps = { ...prev, [stepKey]: true };
-                onVisibleStepsChange?.(newVisibleSteps);
-                return newVisibleSteps;
-              });
-              setLoadingSteps((prev) => ({ ...prev, [stepKey]: true }));
+              
+              // Only update if the step is not already visible
+              if (!visibleSteps[stepKey]) {
+                setVisibleSteps((prev) => {
+                  const newVisibleSteps = { ...prev, [stepKey]: true };
+                  onVisibleStepsChange?.(newVisibleSteps);
+                  return newVisibleSteps;
+                });
+                setLoadingSteps((prev) => ({ ...prev, [stepKey]: true }));
 
-              setTimeout(() => {
-                setLoadingSteps((prev) => ({ ...prev, [stepKey]: false }));
-              }, 1000);
+                setTimeout(() => {
+                  setLoadingSteps((prev) => ({ ...prev, [stepKey]: false }));
+                }, 1000);
+              }
             }
             stepCount++;
           });

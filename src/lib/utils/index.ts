@@ -1,4 +1,4 @@
-import { parseXml } from "./xml";
+// import { parseXml } from "./xml";
 import { buildFileNodeTree } from "./parsing";
 
-export { parseXml, buildFileNodeTree };
+export { buildFileNodeTree };

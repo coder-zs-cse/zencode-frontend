@@ -97,7 +97,6 @@ const PromptField = function ({
         console.log("error in fetching forced components", error);
       }
     }
-    console.log(selectedFiles);
     fetchData();
   }, []);
 

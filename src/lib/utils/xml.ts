@@ -28,63 +28,64 @@ import { StepStatus, StepType } from "@/types/steps";
  * 
  * The input can have strings in the middle they need to be ignored
  */
-export function parseXml(response: string): Step[] {
-    // Extract the XML content between <ZenCodeArtifact> tags
-    const xmlMatch = response.match(/<ZenCodeArtifact[^>]*>([\s\S]*?)<\/ZenCodeArtifact>/);
+// export function parseXml(response: string): Step[] {
+//     // Extract the XML content between <ZenCodeArtifact> tags
+//     const xmlMatch = response.match(/<ZenCodeArtifact[^>]*>([\s\S]*?)<\/ZenCodeArtifact>/);
     
-    if (!xmlMatch) {
-      return [];
-    }
+//     if (!xmlMatch) {
+//       return [];
+//     }
   
-    const xmlContent = xmlMatch[1];
-    const steps: Step[] = [];
-    let stepId = 1;
+//     const xmlContent = xmlMatch[1];
+//     const steps: Step[] = [];
+//     let stepId = 1;
   
-    // Extract artifact title
-    const titleMatch = response.match(/title="([^"]*)"/);
-    const artifactTitle = titleMatch ? titleMatch[1] : 'Project Files';
+//     // Extract artifact title
+//     const titleMatch = response.match(/title="([^"]*)"/);
+//     const artifactTitle = titleMatch ? titleMatch[1] : 'Project Files';
   
-    // Add initial artifact step
-    steps.push({
-      id: stepId++,
-      path: "",
-      title: artifactTitle,
-      description: '',
-      type: StepType.CreateFolder,
-      status: StepStatus.PENDING
-    });
+//     // Add initial artifact step
+//     steps.push({
+//       id: stepId++,
+//       path: "",
+//       title: artifactTitle,
+      
+//       description: '',
+//       type: StepType.CreateFolder,
+//       status: StepStatus.PENDING
+//     });
   
-    // Regular expression to find ZenCodeAction elements
-    const actionRegex = /<ZenCodeAction\s+type="([^"]*)"(?:\s+filePath="([^"]*)")?>([\s\S]*?)<\/ZenCodeAction>/g;
+//     // Regular expression to find ZenCodeAction elements
+//     const actionRegex = /<ZenCodeAction\s+type="([^"]*)"(?:\s+filePath="([^"]*)")?>([\s\S]*?)<\/ZenCodeAction>/g;
     
-    let match;
-    while ((match = actionRegex.exec(xmlContent)) !== null) {
-      const [, type, filePath, content] = match;
+//     let match;
+//     while ((match = actionRegex.exec(xmlContent)) !== null) {
+//       const [, type, filePath, content] = match;
   
-      if (type === 'file') {
-        // File creation step
-        steps.push({
-          id: stepId++,
-          title: `Create ${filePath || 'file'}`,
-          description: '',
-          type: StepType.CreateFile,
-          status: StepStatus.PENDING,
-          content: content.trim(),
-          path: filePath
-        });
-      } else if (type === 'shell') {
-        // Shell command step
-        steps.push({
-          id: stepId++,
-          title: 'Run command',
-          path: filePath,
-          description: '',
-          type: StepType.RunScript,
-          status: StepStatus.PENDING,
-          content: content.trim()
-        });
-      }
-    }
+//       if (type === 'file') {
+//         // File creation step
+//         steps.push({
+//           id: stepId++,
+//           title: `Create ${filePath || 'file'}`,
+//           description: '',
+//           type: StepType.CreateFile,
+//           status: StepStatus.PENDING,
+//           content: content.trim(),
+//           path: filePath
+//         });
+//       } else if (type === 'shell') {
+//         // Shell command step
+//         steps.push({
+//           id: stepId++,
+//           title: 'Run command',
+//           path: filePath,
+//           description: '',
+//           type: StepType.RunScript,
+//           status: StepStatus.PENDING,
+//           content: content.trim()
+//         });
+//       }
+//     }
   
-    return steps;
-  }
+//     return steps;
+//   }

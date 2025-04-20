@@ -25,14 +25,23 @@ import { Sidebar } from "../ui/sidebar/sidebar";
 import { InternalComponents } from "./sections/InternalComponents";
 import { Settings } from "./sections/Settings";
 
+// Create a shared state object outside the component
+const sharedState = {
+  fileNode: [] as FileNode[],
+  stepSets: [] as Step[][],
+  visibleSteps: {} as { [key: string]: boolean },
+  selectedFile: null as FileNode | null,
+  selectedFiles: [] as string[],
+};
+
 export default function Builder() {
   const searchParams = useSearchParams();
   const [isExpanded, setIsExpanded] = useState(false);
   const query = searchParams.get("query");
-  const [selectedFile, setSelectedFile] = useState<FileNode | null>(null);
-  const [selectedFiles, setSelectedFiles] = useState<string[]>([]);
-  const [fileNode, setFileNode] = useState<FileNode[]>([]);
-  const [stepSets, setStepSets] = useState<Step[][]>([]);
+  const [selectedFile, setSelectedFile] = useState<FileNode | null>(sharedState.selectedFile);
+  const [selectedFiles, setSelectedFiles] = useState<string[]>(sharedState.selectedFiles);
+  const [fileNode, setFileNode] = useState<FileNode[]>(sharedState.fileNode);
+  const [stepSets, setStepSets] = useState<Step[][]>(sharedState.stepSets);
   const [currentPage, setCurrentPage] = useState<
     "code-editor" | "components" | "settings"
   >("code-editor");
@@ -40,9 +49,45 @@ export default function Builder() {
   const webcontainerState = useWebContainer(fileNode);
   const [showCheckboxes, setShowCheckboxes] = useState(false);
   const [visibleSteps, setVisibleSteps] = useState<{ [key: string]: boolean }>(
-    {}
+    sharedState.visibleSteps
   );
   const [isLoading, setIsLoading] = useState(false);
+
+  // Update shared state when local state changes
+  useEffect(() => {
+    sharedState.fileNode = fileNode;
+    sharedState.stepSets = stepSets;
+    sharedState.visibleSteps = visibleSteps;
+    sharedState.selectedFile = selectedFile;
+    sharedState.selectedFiles = selectedFiles;
+  }, [fileNode, stepSets, visibleSteps, selectedFile, selectedFiles]);
+
+  // Function to handle file content changes
+  const handleFileContentChange = (newContent: string | undefined) => {
+    if (!selectedFile || !newContent) return;
+    
+    // Create a deep copy of the fileNode array
+    const updatedFileNodes = JSON.parse(JSON.stringify(fileNode));
+    
+    // Function to recursively update file content
+    const updateFileContent = (nodes: FileNode[]): FileNode[] => {
+      return nodes.map(node => {
+        if (node.type === 'file' && node.path === selectedFile.path) {
+          return { ...node, content: newContent };
+        }
+        if (node.type === 'folder' && node.children) {
+          return { ...node, children: updateFileContent(node.children) };
+        }
+        return node;
+      });
+    };
+    
+    // Update the fileNode state with the new content
+    setFileNode(updateFileContent(updatedFileNodes));
+    
+    // Update the selectedFile state to reflect changes
+    setSelectedFile(prev => prev ? { ...prev, content: newContent } : null);
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -170,7 +215,10 @@ export default function Builder() {
                   <div className="flex-1 flex flex-col h-full overflow-hidden">
                     <div className="flex-1 text-xl text-gray-800 ">
                       {activeView === "editor" ? (
-                        <CodeEditor selectedFile={selectedFile} />
+                        <CodeEditor 
+                          selectedFile={selectedFile} 
+                          onChange={handleFileContentChange}
+                        />
                       ) : (
                         <PreviewFrame webContainer={webcontainerState} />
                       )}

@@ -25,8 +25,9 @@ const CodeEditor = function ({
           options={{
             minimap: { enabled: false },
             fontSize: 14,
-            readOnly,
+            readOnly: false
           }}
+          
           onChange={onChange}
         />
       ) : (
