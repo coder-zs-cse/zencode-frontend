@@ -1,5 +1,5 @@
 "use client";
-import React, { Component, HTMLAttributes } from "react";
+import React, { Component, HTMLAttributes, useState, useEffect } from "react";
 import {
   CheckCircle,
   Clock,
@@ -8,8 +8,6 @@ import {
   FileX,
   Folder,
   Loader2,
-  MessageSquare,
-  Terminal,
 } from "lucide-react";
 import { Step } from "@/types";
 import { StepType } from "../../../types/steps";
@@ -27,10 +25,70 @@ export interface StepObject {
 
 interface ProgressStepsProps {
   stepSets: Step[][];
+  onVisibleStepsChange?: (visibleSteps: { [key: string]: boolean }) => void;
+  isLoading?: boolean;
 }
 
-const ProgressSteps = function ({ stepSets }: ProgressStepsProps) {
-  const getStatusIcon = (status: StepStatus = StepStatus.PENDING) => {
+const ProgressSteps = function ({
+  stepSets,
+  onVisibleStepsChange,
+  isLoading = false,
+}: ProgressStepsProps) {
+  const [loadingSteps, setLoadingSteps] = useState<{ [key: string]: boolean }>(
+    {}
+  );
+  const [visibleSteps, setVisibleSteps] = useState<{ [key: string]: boolean }>(
+    {}
+  );
+
+  useEffect(() => {
+    if (isLoading) {
+      // Reset visibility when loading starts
+      setVisibleSteps({});
+      setLoadingSteps({});
+    } else {
+      // Show steps sequentially when loading is complete
+      let currentIndex = 0;
+      const totalSteps = stepSets.reduce((acc, steps) => acc + steps.length, 0);
+
+      const showNextStep = () => {
+        if (currentIndex >= totalSteps) return;
+
+        let stepCount = 0;
+        stepSets.forEach((steps, setIndex) => {
+          steps.forEach((step, index) => {
+            if (stepCount === currentIndex) {
+              const stepKey = `${setIndex}-${index}`;
+              setVisibleSteps((prev) => {
+                const newVisibleSteps = { ...prev, [stepKey]: true };
+                onVisibleStepsChange?.(newVisibleSteps);
+                return newVisibleSteps;
+              });
+              setLoadingSteps((prev) => ({ ...prev, [stepKey]: true }));
+
+              setTimeout(() => {
+                setLoadingSteps((prev) => ({ ...prev, [stepKey]: false }));
+              }, 1000);
+            }
+            stepCount++;
+          });
+        });
+
+        currentIndex++;
+        setTimeout(showNextStep, 1000);
+      };
+
+      showNextStep();
+    }
+  }, [stepSets, onVisibleStepsChange, isLoading]);
+
+  const getStatusIcon = (
+    status: StepStatus = StepStatus.PENDING,
+    stepKey: string
+  ) => {
+    if (loadingSteps[stepKey]) {
+      return <Loader2 className="w-5 h-5 text-blue-400 animate-spin" />;
+    }
     switch (status) {
       case StepStatus.COMPLETED:
         return <CheckCircle className="w-5 h-5 text-green-400" />;
@@ -66,25 +124,7 @@ const ProgressSteps = function ({ stepSets }: ProgressStepsProps) {
       case StepType.InternalComponentImport:
         return <Component className={iconClass} />;
       default:
-        // return <MessageSquare className={iconClass} />;
-    }
-  };
-
-  const StepContent = ({ step }: { step: Step }) => {
-    const statusColor = getStatusColor(step.status);
-    if (step.description == "") {
-      return null;
-    }
-    switch (step.type) {
-
-      case StepType.TextDisplay:
-        return <p className="mt-2 text-gray-400">{step.description}</p>;
-      default:
-        return (
-          <div className={`mt-2 p-3 rounded-lg border ${statusColor}`}>
-            {step.description}
-          </div>
-        );
+      // return <MessageSquare className={iconClass} />;
     }
   };
 
@@ -93,66 +133,76 @@ const ProgressSteps = function ({ stepSets }: ProgressStepsProps) {
       <h2 className="text-xl font-bold mb-4">Progress</h2>
       <div className="space-y-6">
         {stepSets.map((steps, setIndex) => (
-          <div key={setIndex} className="w-full max-w-3xl mx-auto bg-slate-900 rounded-xl shadow-xl shadow-black/20 p-6 border border-gray-700">
+          <div
+            key={setIndex}
+            className="w-full max-w-3xl mx-auto bg-slate-900 rounded-xl shadow-xl shadow-black/20 p-6 border border-gray-700"
+          >
             {setIndex > 0 && (
               <div className="mb-4 pb-4 border-b border-gray-700">
-                <span className="text-sm text-gray-400">Step Set {setIndex + 1}</span>
+                <span className="text-sm text-gray-400">
+                  Step Set {setIndex + 1}
+                </span>
               </div>
             )}
             <div className="space-y-6">
-              {steps.map((step, index) => (
-                <div key={index} className="relative">
-                  {step.type === StepType.TextDisplay ? (
-                    <div className="ml-4">
-                      <p className="text-white">{step.content}</p>
-                    </div>
-                  ) : (
-                    <div className="flex items-start gap-4">
-                      {/* Timeline line */}
-                      {index < steps.length - 1 && (
-                        <div
-                          className={`absolute top-10 left-5 w-0.5 h-full -ml-0.5 ${
-                            step.status === StepStatus.COMPLETED
-                              ? "bg-green-900/50"
-                              : step.status === StepStatus.IN_PROGRESS
-                              ? "bg-blue-900/50"
-                              : "bg-gray-700"
-                          }`}
-                        />
-                      )}
+              {steps.map((step, index) => {
+                const stepKey = `${setIndex}-${index}`;
+                if (!visibleSteps[stepKey]) return null;
 
-                      {/* Icon */}
-                      <div className="relative z-10">
-                        <div
-                          className={`p-2 rounded-lg ${getStatusColor(
-                            step.status
-                          )}`}
-                        >
-                          <StepIcon type={step.type} />
-                        </div>
+                return (
+                  <div key={index} className="relative">
+                    {step.type === StepType.TextDisplay ? (
+                      <div className="ml-4">
+                        <p className="text-white">{step.content}</p>
                       </div>
+                    ) : (
+                      <div className="flex items-start gap-4">
+                        {/* Timeline line */}
+                        {index < steps.length - 1 && (
+                          <div
+                            className={`absolute top-10 left-5 w-0.5 h-full -ml-0.5 ${
+                              step.status === StepStatus.COMPLETED
+                                ? "bg-green-900/50"
+                                : step.status === StepStatus.IN_PROGRESS
+                                ? "bg-blue-900/50"
+                                : "bg-gray-700"
+                            }`}
+                          />
+                        )}
 
-                      {/* Content */}
-                      <div className="flex-1">
-                        <div className="flex items-center justify-between mb-2">
-                          <h3 className="font-medium text-gray-200">
-                            {step.title || step.type}
-                          </h3>
-                          <div className="flex items-center">
-                            {getStatusIcon(step.status)}
+                        {/* Icon */}
+                        <div className="relative z-10">
+                          <div
+                            className={`p-2 rounded-lg ${getStatusColor(
+                              step.status
+                            )}`}
+                          >
+                            <StepIcon type={step.type} />
+                          </div>
+                        </div>
+
+                        {/* Content */}
+                        <div className="flex-1">
+                          <div className="flex items-center justify-between mb-2">
+                            <h3 className="font-medium text-gray-200">
+                              {step.title || step.type}
+                            </h3>
+                            <div className="flex items-center">
+                              {getStatusIcon(step.status, stepKey)}
+                            </div>
                           </div>
                         </div>
                       </div>
-                    </div>
-                  )}
-                </div>
-              ))}
+                    )}
+                  </div>
+                );
+              })}
             </div>
           </div>
         ))}
       </div>
     </div>
   );
-}
+};
 
-export { ProgressSteps }
+export { ProgressSteps };

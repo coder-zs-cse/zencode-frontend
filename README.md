@@ -57,6 +57,11 @@ If you don't have pnpm installed, install it with
 ```bash
 npm install -g pnpm
 ```
+use the node version compatible for the project
+
+```bash
+nvm use 
+```
 
 install the dependencies
 
@@ -93,7 +98,7 @@ This project was brought to life by: Goemkars
 
 [Niranjan Hebli](https://github.com/NiranjanHebli)
 
-[Bryson Gracias](https://github.com/)
+[Bryson Gracias](https://github.com/MrGladiator14)
 
 ---
 

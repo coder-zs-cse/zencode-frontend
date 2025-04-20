@@ -20,9 +20,18 @@ let request: generateAPIRequest = {
 interface PromptFieldProps {
   fileNode: FileNode[];
   onNewSteps: (steps: Step[]) => void;
+  showCheckboxes: boolean;
+  setCheckboxes: (showCheckboxes: boolean) => void;
+  selectedFiles: string[];
 }
 
-const PromptField = function ({ fileNode, onNewSteps }: PromptFieldProps) {
+const PromptField = function ({
+  fileNode,
+  onNewSteps,
+  showCheckboxes,
+  setCheckboxes,
+  selectedFiles,
+}: PromptFieldProps) {
   const [prompt, setPrompt] = useState("");
   const [isOpen, setIsOpen] = useState(false);
   const [enableAI, setEnableAI] = useState(true);
@@ -56,14 +65,14 @@ const PromptField = function ({ fileNode, onNewSteps }: PromptFieldProps) {
       };
 
       const generateData = await generate_endpoint(request);
-      const newSteps = generateData.generated_code.steps.map(step => ({
+      const newSteps = generateData.generated_code.steps.map((step) => ({
         ...step,
         status: step.status || StepStatus.COMPLETED,
         type: step.type as StepType,
       }));
 
       onNewSteps(newSteps);
-      
+
       request = {
         ...request,
         forcedComponents: [],
@@ -88,6 +97,7 @@ const PromptField = function ({ fileNode, onNewSteps }: PromptFieldProps) {
         console.log("error in fetching forced components", error);
       }
     }
+    console.log(selectedFiles);
     fetchData();
   }, []);
 
@@ -125,7 +135,7 @@ const PromptField = function ({ fileNode, onNewSteps }: PromptFieldProps) {
           </div>
 
           <div className="mt-4 pt-3 border-t border-gray-700">
-            <div className="flex items-center justify-between">
+            <div className="flex items-center pb-4 justify-between">
               <h4 className="text-sm font-medium text-white">
                 Enable AI Choices
               </h4>
@@ -138,6 +148,23 @@ const PromptField = function ({ fileNode, onNewSteps }: PromptFieldProps) {
                 <span
                   className={`inline-block h-4 w-4 transform rounded-full bg-white shadow-lg transition-transform duration-200 ease-in-out ${
                     enableAI ? "translate-x-6" : "translate-x-1"
+                  }`}
+                />
+              </button>
+            </div>
+            <div className="flex items-center pt-3 border-t border-gray-700 justify-between">
+              <h4 className="text-sm font-medium text-white mr-6">
+                Enable Custom Context
+              </h4>
+              <button
+                onClick={() => setCheckboxes(!showCheckboxes)}
+                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-slate-900 ${
+                  showCheckboxes ? "bg-blue-500" : "bg-gray-600"
+                }`}
+              >
+                <span
+                  className={`inline-block h-4 w-4 transform rounded-full bg-white shadow-lg transition-transform duration-200 ease-in-out ${
+                    showCheckboxes ? "translate-x-6" : "translate-x-1"
                   }`}
                 />
               </button>
@@ -162,7 +189,6 @@ const PromptField = function ({ fileNode, onNewSteps }: PromptFieldProps) {
       </form>
 
       <div className="flex bg-slate-900 justify-end p-2 rounded-b-2xl">
-        
         <button
           onClick={() => setIsOpen(!isOpen)}
           className="bg-blue-500 hover:bg-blue-600 px-2 py-2 m-2 rounded-lg transition-colors duration-200 text-white"
