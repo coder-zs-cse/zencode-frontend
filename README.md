@@ -81,14 +81,25 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 # **User Interfaces :**:
 
 ## Code Editor Page 
-<img width="1470" alt="Screenshot 2025-04-01 at 5 25 14 PM" src="https://github.com/user-attachments/assets/9d594cf7-bd5a-4ee7-afc3-95006762536d" />
+![Screenshot (42)](https://github.com/user-attachments/assets/46721765-b800-4a3e-aaf4-6001bd3f693a)
+
+![Screenshot (44)](https://github.com/user-attachments/assets/d25a885f-e7f6-47dd-8f97-2ed03316c75e)
+
+![Screenshot (45)](https://github.com/user-attachments/assets/c90dcbe0-581b-483d-b157-9ddecf01cbe5)
+
+![Screenshot (46)](https://github.com/user-attachments/assets/fba88cb9-57ef-48aa-a60d-660e70ca8127)
 
 ## Library Page 
-<img width="1470" alt="Screenshot 2025-04-01 at 5 25 42 PM" src="https://github.com/user-attachments/assets/4e966fe4-4ed9-4c17-ad40-107b546392d3" />
-<img width="1470" alt="Screenshot 2025-04-01 at 5 26 05 PM" src="https://github.com/user-attachments/assets/4e560a2e-5dd1-4d6a-9a62-e9c568c6e31d" />
+![Screenshot (36)](https://github.com/user-attachments/assets/df8565df-3d7a-4d74-a850-2c75d9900268)
+
+![Screenshot (37)](https://github.com/user-attachments/assets/7f87c5ff-d8d7-43f0-8733-b915d9f196af)
+
+![Screenshot (38)](https://github.com/user-attachments/assets/037ceaeb-874b-4946-a377-de554fb4664c)
+
+![Screenshot (40)](https://github.com/user-attachments/assets/c2449ab0-b601-4b8a-aead-15b1243a72ab)
 
 ## Setting Page
-<img width="1470" alt="Screenshot 2025-04-01 at 5 26 21 PM" src="https://github.com/user-attachments/assets/d57dd3d9-7e29-4dbf-a0c1-ef4fbe4b8797" />
+![Screenshot (39)](https://github.com/user-attachments/assets/e095a2ef-6e82-4c14-9ef2-404b3fe3fd39)
 
 ---
 # 🤝 **Team & Contributions**:
