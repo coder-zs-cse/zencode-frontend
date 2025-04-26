@@ -101,6 +101,15 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 ## Setting Page
 ![Screenshot (39)](https://github.com/user-attachments/assets/e095a2ef-6e82-4c14-9ef2-404b3fe3fd39)
 
+
+# 🛠️ **Tech Stack**
+
+This project was crafted using the following tools and technologies:
+
+**Frontend**: Next.js, WebContainer <br>
+**[Data Backend](https://github.com/coder-zs-cse/zencode-nodejs)**: Node.js, MongoDB <br>
+**[LLM Backend](https://github.com/coder-zs-cse/zencode-backend)**: FastAPI, Pinecone, OpenAI <br> 
+
 ---
 # 🤝 **Team & Contributions**:
 This project was brought to life by: Goemkars
