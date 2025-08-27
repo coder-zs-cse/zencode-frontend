@@ -3,6 +3,16 @@
 🚀 Zencode AI - 
 V0 Clone that Transform Ideas into Website—Locked to Your Design Standards. **The Perfect Enterprise level requirements!!**
 
+# 🛠️ **Tech Stack**
+
+This project was crafted using the following tools and technologies:
+
+**Frontend**: Next.js, WebContainer <br>
+**[Data Backend](https://github.com/coder-zs-cse/zencode-nodejs)**: Node.js, MongoDB <br>
+**[LLM Backend](https://github.com/coder-zs-cse/zencode-backend)**: FastAPI, Pinecone, OpenAI <br> 
+
+Click to open the Backend repository.
+
 ### 🌟 Why Zencode AI?
 Tired of AI tools that ignore your design system? Zencode AI is V0’s disciplined cousin—it generates UI code that strictly uses your pre-approved components, colors, and npm packages.
 
@@ -29,13 +39,6 @@ AI that actually follows the rules:
 4. One-Click Export <br>
 > the legend said yes, it’s instant
 
-# 🛠️ **Tech Stack**
-
-This project was crafted using the following tools and technologies:
-
-**Frontend**: Next.js, WebContainer <br>
-**[Data Backend](https://github.com/coder-zs-cse/zencode-nodejs)**: Node.js, MongoDB <br>
-**[LLM Backend](https://github.com/coder-zs-cse/zencode-backend)**: FastAPI, Pinecone, OpenAI <br> 
 
 ---
 
